@@ -19,7 +19,7 @@ public class FollowService {
     public interface Observer {
         void displayError(String message);
 
-        void displayException(Exception ex);
+        void displayException(Exception ex, String message);
 
         void addFollowees(List<User> followees, boolean hasMorePages);
     }
@@ -55,7 +55,7 @@ public class FollowService {
                 observer.displayError("Failed to get following: " + message);
             } else if (msg.getData().containsKey(GetFollowingTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetFollowingTask.EXCEPTION_KEY);
-                observer.displayException(ex);
+                observer.displayException(ex, "Failed to get following because of exception: ");
             }
         }
     }
