@@ -88,6 +88,7 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
         followersRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new GetFollowersPresenter(this);
+        presenter.loadMoreItems(user);
 
         return view;
     }
@@ -169,13 +170,6 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
 
         private boolean hasMorePages;
         private boolean isLoading = false;
-
-        /**
-         * Creates an instance and loads the first page of following data.
-         */
-        FollowersRecyclerViewAdapter() {
-            loadMoreItems();
-        }
 
         /**
          * Adds new users to the list from which the RecyclerView retrieves the users it displays
