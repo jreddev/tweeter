@@ -86,6 +86,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new GetFeedPresenter(this);
+        presenter.loadMoreItems(user);
 
         return view;
     }
@@ -204,13 +205,6 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
     private class FeedRecyclerViewAdapter extends RecyclerView.Adapter<FeedHolder> {
 
         private final List<Status> feed = new ArrayList<>();
-
-        /**
-         * Creates an instance and loads the first page of feed data.
-         */
-        FeedRecyclerViewAdapter() {
-            loadMoreItems();
-        }
 
         /**
          * Adds new statuses to the list from which the RecyclerView retrieves the statuses it displays
