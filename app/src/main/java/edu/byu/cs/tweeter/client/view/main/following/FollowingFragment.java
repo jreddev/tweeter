@@ -104,6 +104,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
 
     @Override
     public void startIntentActivity(User user) {
+        //TODO:: look at similar function in FeedFragment, decide if needed to set user.
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
         startActivity(intent);
