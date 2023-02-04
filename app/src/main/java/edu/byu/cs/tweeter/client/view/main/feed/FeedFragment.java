@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.view.main.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.GetFeedPresenter;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -107,6 +109,13 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
     @Override
     public void addItems(List<Status> statuses) {
         feedRecyclerViewAdapter.addItems(statuses);
+    }
+
+    @Override
+    public void startIntentActivity() {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
     }
 
     /**

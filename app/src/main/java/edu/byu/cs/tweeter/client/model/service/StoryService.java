@@ -3,8 +3,6 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public class StoryService {
 
         void displayMessage(String s);
         void displayException(Exception ex, String s);
-        void addItems(List<Status> statuses);
+        void addItems(List<Status> statuses, boolean hasMorePages);
     }
 
     public void loadMoreItems(User user, int pageSize, Status lastStatus, Observer observer) {
@@ -49,7 +47,7 @@ public class StoryService {
             if (success) {
                 List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetStoryTask.STATUSES_KEY);
                 boolean hasMorePages = msg.getData().getBoolean(GetStoryTask.MORE_PAGES_KEY);
-                observer.addItems(statuses);
+                observer.addItems(statuses, hasMorePages);
             } else if (msg.getData().containsKey(GetStoryTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetStoryTask.MESSAGE_KEY);
                 observer.displayMessage("Failed to get story: " + message);

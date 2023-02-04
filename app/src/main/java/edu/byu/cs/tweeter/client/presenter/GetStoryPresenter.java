@@ -22,11 +22,16 @@ public class GetStoryPresenter {
         return hasMorePages;
     }
 
+    public void setHasMorePages(boolean hasMorePages) {
+        this.hasMorePages = hasMorePages;
+    }
+
     public interface View {
 
         void setLoadingFooter(boolean isLoading);
         void displayMessage(String message);
         void addItems(List<Status> statuses);
+        void startIntentActivity(User user);
     }
 
     private View view;
@@ -47,6 +52,28 @@ public class GetStoryPresenter {
         }
     }
 
+    public void onClick(String userAlias) {
+        userService.onClick(userAlias, new GetUserObserver() );
+    }
+
+    public class GetUserObserver implements UserService.Observer{
+
+        @Override
+        public void displayError(String message) {
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void displayException(Exception ex, String message) {
+            view.displayMessage(message + ex.getMessage());
+        }
+
+        @Override
+        public void startActivity(User user) {
+            view.startIntentActivity(user);
+        }
+    }
+
     public class GetStoryObserver implements StoryService.Observer {
 
         @Override
@@ -64,9 +91,10 @@ public class GetStoryPresenter {
         }
 
         @Override
-        public void addItems(List<Status> statuses) {
+        public void addItems(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
+            setHasMorePages(hasMorePages);
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
             view.addItems(statuses);
         }
