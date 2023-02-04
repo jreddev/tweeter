@@ -282,8 +282,6 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
             removeItem(users.get(users.size() - 1));
         }
 
-
-
     }
 
     /**
