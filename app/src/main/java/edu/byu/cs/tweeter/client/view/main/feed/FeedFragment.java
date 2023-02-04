@@ -74,6 +74,8 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
 
+        presenter = new GetFeedPresenter(this);
+
         //noinspection ConstantConditions
         user = (User) getArguments().getSerializable(USER_KEY);
 
@@ -87,7 +89,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
 
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
 
-        presenter = new GetFeedPresenter(this);
+
         presenter.loadMoreItems(user);
 
         return view;
