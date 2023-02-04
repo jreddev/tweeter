@@ -38,7 +38,6 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
 
-
     private User user;
 
     private FollowingRecyclerViewAdapter followingRecyclerViewAdapter;
@@ -86,8 +85,8 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
     }
 
     @Override
-    public void setLoadingFooter(boolean value) {
-        if (value)
+    public void setLoadingFooter(boolean isLoading) {
+        if (isLoading)
             followingRecyclerViewAdapter.addLoadingFooter();
         else
             followingRecyclerViewAdapter.removeLoadingFooter();
@@ -134,7 +133,6 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Remove this task later
                     presenter.onClick(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }

@@ -113,6 +113,11 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
         startActivity(intent);
     }
 
+    @Override
+    public void addMoreItems(List<User> followers) {
+        followersRecyclerViewAdapter.addItems(followers);
+    }
+
     /**
      * The ViewHolder for the RecyclerView that displays the follower data.
      */
@@ -165,11 +170,6 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
     private class FollowersRecyclerViewAdapter extends RecyclerView.Adapter<FollowersHolder> {
 
         private final List<User> users = new ArrayList<>();
-
-        private User lastFollower;
-
-        private boolean hasMorePages;
-        private boolean isLoading = false;
 
         /**
          * Adds new users to the list from which the RecyclerView retrieves the users it displays
@@ -240,7 +240,7 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
          */
         @Override
         public void onBindViewHolder(@NonNull FollowersHolder followingHolder, int position) {
-            if (!isLoading) {
+            if (!presenter.isLoading()) {
                 followingHolder.bindUser(users.get(position));
             }
         }
@@ -264,7 +264,7 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
          */
         @Override
         public int getItemViewType(int position) {
-            return (position == users.size() - 1 && isLoading) ? LOADING_DATA_VIEW : ITEM_VIEW;
+            return (position == users.size() - 1 && presenter.isLoading()) ? LOADING_DATA_VIEW : ITEM_VIEW;
         }
 
         /**
@@ -295,34 +295,7 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
         /**
          * Message handler (i.e., observer) for GetFollowersTask.
          */
-        private class GetFollowersHandler extends Handler {
 
-            public GetFollowersHandler() {
-                super(Looper.getMainLooper());
-            }
-
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                isLoading = false;
-                removeLoadingFooter();
-
-                boolean success = msg.getData().getBoolean(GetFollowersTask.SUCCESS_KEY);
-                if (success) {
-                    List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.FOLLOWERS_KEY);
-                    hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
-
-                    lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
-
-                    followersRecyclerViewAdapter.addItems(followers);
-                } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
-                    String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-                    Toast.makeText(getContext(), "Failed to get followers: " + message, Toast.LENGTH_LONG).show();
-                } else if (msg.getData().containsKey(GetFollowersTask.EXCEPTION_KEY)) {
-                    Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-                    Toast.makeText(getContext(), "Failed to get followers because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
     }
 
     /**
@@ -359,7 +332,7 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            if (!followersRecyclerViewAdapter.isLoading && followersRecyclerViewAdapter.hasMorePages) {
+            if (!presenter.isLoading() && presenter.hasMorePages()) {
                 if ((visibleItemCount + firstVisibleItemPosition) >=
                         totalItemCount && firstVisibleItemPosition >= 0) {
                     // Run this code later on the UI thread

@@ -76,17 +76,14 @@ public class GetFollowingPresenter {
 
     public class GetUserObserver implements UserService.Observer
     {
-
         @Override
         public void displayError(String message) {
             view.displayMessage(message);
         }
-
         @Override
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
-
         @Override
         public void startActivity(User user) {
             view.startIntentActivity(user);

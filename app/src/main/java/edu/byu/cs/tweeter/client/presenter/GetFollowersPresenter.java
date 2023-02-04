@@ -1,18 +1,14 @@
 package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
-import edu.byu.cs.tweeter.client.model.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowersPresenter {
     private static final int PAGE_SIZE = 10;
-    private User lastFollowee;
+    private User lastFollower;
     private boolean hasMorePages;
     public boolean hasMorePages() {
         return hasMorePages;
@@ -28,10 +24,9 @@ public class GetFollowersPresenter {
     public interface View {
 
         void setLoadingFooter(boolean isLoading);
-
         void displayMessage(String message);
-
         void startIntentActivity(User user);
+        void addMoreItems(List<User> followers);
     }
 
     private View view;
@@ -49,7 +44,7 @@ public class GetFollowersPresenter {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new GetFollowersObserver());
+            followService.loadMoreItems(user, PAGE_SIZE, lastFollower, new GetFollowersObserver());
         }
     }
 
@@ -61,31 +56,37 @@ public class GetFollowersPresenter {
 
         @Override
         public void displayError(String message) {
-
-        }
-
-        @Override
-        public void displayException(Exception ex, String message) {
-
-        }
-
-        @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
-
-        }
-    }
-
-    private class GetUserObserver implements UserService.Observer {
-        @Override
-        public void displayError(String message) {
+            isLoading = false;
+            view.setLoadingFooter(isLoading);
             view.displayMessage(message);
         }
 
         @Override
         public void displayException(Exception ex, String message) {
+            isLoading = false;
+            view.setLoadingFooter(isLoading);
             view.displayMessage(message + ex.getMessage());
         }
 
+        @Override
+        public void addFollowees(List<User> followers, boolean hasMorePages) {
+            isLoading = false;
+            view.setLoadingFooter(isLoading);
+            lastFollower = (followers.size() > 0) ? followers.get(followers.size() - 1) : null;
+            setHasMorePages(hasMorePages);
+            view.addMoreItems(followers);
+        }
+    }
+
+    public class GetUserObserver implements UserService.Observer {
+        @Override
+        public void displayError(String message) {
+            view.displayMessage(message);
+        }
+        @Override
+        public void displayException(Exception ex, String message) {
+            view.displayMessage(message + ex.getMessage());
+        }
         @Override
         public void startActivity(User user) {
             view.startIntentActivity(user);
