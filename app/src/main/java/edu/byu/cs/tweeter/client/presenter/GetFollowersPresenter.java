@@ -4,6 +4,8 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowersPresenter {
@@ -44,7 +46,7 @@ public class GetFollowersPresenter {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            followService.loadMoreItems(user, PAGE_SIZE, lastFollower, new GetFollowersObserver());
+            followService.loadMoreItems(user, PAGE_SIZE, lastFollower, "follower", new GetFollowersObserver());
         }
     }
 
@@ -55,7 +57,7 @@ public class GetFollowersPresenter {
     public class GetFollowersObserver implements FollowService.Observer {
 
         @Override
-        public void displayError(String message) {
+        public void displayMessage(String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message);
@@ -76,11 +78,16 @@ public class GetFollowersPresenter {
             setHasMorePages(hasMorePages);
             view.addMoreItems(followers);
         }
+
+        @Override
+        public void addItems(List<Status> statuses, boolean hasMorePages) {
+            //Not Needed here
+        }
     }
 
     public class GetUserObserver implements UserService.Observer {
         @Override
-        public void displayError(String message) {
+        public void displayMessage(String message) {
             view.displayMessage(message);
         }
         @Override
@@ -90,6 +97,9 @@ public class GetFollowersPresenter {
         @Override
         public void startActivity(User user) {
             view.startIntentActivity(user);
+        }
+        @Override
+        public void startIntentActivity(User registeredUser, AuthToken authToken) {
         }
     }
 }

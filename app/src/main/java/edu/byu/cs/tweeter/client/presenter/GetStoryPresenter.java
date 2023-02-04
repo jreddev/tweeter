@@ -2,8 +2,9 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.StoryService;
+import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -36,19 +37,19 @@ public class GetStoryPresenter {
 
     private View view;
     private UserService userService;
-    private StoryService storyService;
+    private FollowService followService;
 
     public GetStoryPresenter(View view) {
         this.view = view;
         userService = new UserService();
-        storyService = new StoryService();
+        followService = new FollowService();
     }
 
     public void loadMoreItems(User user) {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            storyService.loadMoreItems(user, PAGE_SIZE, lastStatus, new GetStoryObserver());
+            followService.loadMoreItems(user, PAGE_SIZE, lastStatus, "story", new GetStoryObserver());
         }
     }
 
@@ -59,7 +60,7 @@ public class GetStoryPresenter {
     public class GetUserObserver implements UserService.Observer{
 
         @Override
-        public void displayError(String message) {
+        public void displayMessage(String message) {
             view.displayMessage(message);
         }
 
@@ -70,11 +71,16 @@ public class GetStoryPresenter {
 
         @Override
         public void startActivity(User user) {
-            view.startIntentActivity(user);
+
+        }
+
+        @Override
+        public void startIntentActivity(User registeredUser, AuthToken authToken) {
+
         }
     }
 
-    public class GetStoryObserver implements StoryService.Observer {
+    public class GetStoryObserver implements FollowService.Observer {
 
         @Override
         public void displayMessage(String message) {
@@ -82,14 +88,16 @@ public class GetStoryPresenter {
             view.setLoadingFooter(isLoading);
             view.displayMessage(message);
         }
-
         @Override
         public void displayException(Exception ex, String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message + ex.getMessage());
         }
+        @Override
+        public void addFollowees(List<User> followees, boolean hasMorePages) {
 
+        }
         @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;

@@ -1,6 +1,6 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import edu.byu.cs.tweeter.client.model.service.LoginService;
+import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -14,23 +14,29 @@ public class GetLoginPresenter {
     }
 
     private View view;
-    private LoginService loginService;
+    private UserService userService;
     public GetLoginPresenter(View view) {
         this.view = view;
-        loginService = new LoginService();
+        userService = new UserService();
     }
 
     public void onClick(String alias, String password) {
-        loginService.onClick(alias,password, new GetLoginObserver());
+        userService.onClick(alias,password, new GetLoginObserver());
     }
 
-    public class GetLoginObserver implements LoginService.Observer {
-
+    public class GetLoginObserver implements UserService.Observer {
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);
         }
-
+        @Override
+        public void displayException(Exception ex, String message) {
+            //DOES NOTHING HERE
+        }
+        @Override
+        public void startActivity(User user) {
+            //DOES NOTHING HERE
+        }
         @Override
         public void startIntentActivity(User loggedInUser, AuthToken authToken) {
             view.startIntentActivity(loggedInUser,authToken);

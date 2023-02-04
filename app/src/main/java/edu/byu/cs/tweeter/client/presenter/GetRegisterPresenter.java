@@ -1,6 +1,6 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import edu.byu.cs.tweeter.client.model.service.RegisterService;
+import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -14,17 +14,17 @@ public class GetRegisterPresenter {
     }
 
     private View view;
-    private RegisterService registerService;
+    private UserService userService;
     public GetRegisterPresenter(View view){
         this.view = view;
-        registerService = new RegisterService();
+        userService = new UserService();
     }
 
     public void onClick(String firstName, String lastName, String alias, String password, String imageBytesBase64) {
-        registerService.onClick(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
+        userService.onClick(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
     }
 
-    public class GetRegisterObserver implements RegisterService.Observer {
+    public class GetRegisterObserver implements UserService.Observer {
 
         @Override
         public void displayMessage(String message) {
@@ -34,6 +34,11 @@ public class GetRegisterPresenter {
         @Override
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
+        }
+
+        @Override
+        public void startActivity(User user) {
+            //NOTHING TO DO HERE
         }
 
         @Override

@@ -2,8 +2,9 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.FeedService;
+import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -36,11 +37,11 @@ public class GetFeedPresenter {
 
     private View view;
     private UserService userService;
-    private FeedService feedService;
+    private FollowService followService;
     public GetFeedPresenter(View view){
         this.view = view;
         userService = new UserService();
-        feedService = new FeedService();
+        followService = new FollowService();
     }
 
     public void onClick(String userAlias) {
@@ -51,14 +52,14 @@ public class GetFeedPresenter {
         if (!isLoading){
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            feedService.loadMoreItems(user, PAGE_SIZE, lastStatus, new GetFeedObserver());
+            followService.loadMoreItems(user, PAGE_SIZE, lastStatus, "feed", new GetFeedObserver());
         }
     }
 
     public class GetUserObserver implements UserService.Observer {
 
         @Override
-        public void displayError(String message) {
+        public void displayMessage(String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
         }
@@ -75,12 +76,17 @@ public class GetFeedPresenter {
             view.setLoadingFooter(isLoading);
             view.startIntentActivity(user);
         }
-    }
-
-    public class GetFeedObserver implements FeedService.Observer {
 
         @Override
-        public void displayError(String message) {
+        public void startIntentActivity(User registeredUser, AuthToken authToken) {
+
+        }
+    }
+
+    public class GetFeedObserver implements FollowService.Observer {
+
+        @Override
+        public void displayMessage(String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message);
@@ -91,6 +97,11 @@ public class GetFeedPresenter {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message + ex.getMessage());
+        }
+
+        @Override
+        public void addFollowees(List<User> followees, boolean hasMorePages) {
+
         }
 
         @Override
