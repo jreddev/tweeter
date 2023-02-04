@@ -31,7 +31,7 @@ public class GetFeedPresenter {
         void setLoadingFooter(boolean isLoading);
         void displayMessage(String message);
         void addItems(List<Status> statuses);
-        void startIntentActivity();
+        void startIntentActivity(User user);
     }
 
     private View view;
@@ -73,7 +73,7 @@ public class GetFeedPresenter {
         public void startActivity(User user) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.startIntentActivity();
+            view.startIntentActivity(user);
         }
     }
 
