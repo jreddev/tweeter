@@ -37,6 +37,7 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.presenter.GetStoryPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -44,18 +45,18 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the "Story" tab.
  */
-public class StoryFragment extends Fragment {
+public class StoryFragment extends Fragment implements GetStoryPresenter.View {
     private static final String LOG_TAG = "StoryFragment";
     private static final String USER_KEY = "UserKey";
 
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
 
-    private static final int PAGE_SIZE = 10;
-
     private User user;
 
     private StoryRecyclerViewAdapter storyRecyclerViewAdapter;
+
+    private GetStoryPresenter presenter;
 
     /**
      * Creates an instance of the fragment and places the target user in an arguments
@@ -92,7 +93,27 @@ public class StoryFragment extends Fragment {
 
         storyRecyclerView.addOnScrollListener(new StoryRecyclerViewPaginationScrollListener(layoutManager));
 
+        presenter = new GetStoryPresenter(this);
+
         return view;
+    }
+
+    @Override
+    public void setLoadingFooter(boolean isLoading) {
+        if (isLoading)
+            storyRecyclerViewAdapter.addLoadingFooter();
+        else
+            storyRecyclerViewAdapter.removeLoadingFooter();
+    }
+
+    @Override
+    public void displayMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void addItems(List<Status> statuses) {
+        storyRecyclerViewAdapter.addItems(statuses);
     }
 
     /**
@@ -222,10 +243,6 @@ public class StoryFragment extends Fragment {
     private class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryHolder> {
 
         private final List<Status> story = new ArrayList<>();
-        private Status lastStatus;
-
-        private boolean hasMorePages;
-        private boolean isLoading = false;
 
         /**
          * Creates an instance and loads the first page of story data.
@@ -303,7 +320,7 @@ public class StoryFragment extends Fragment {
          */
         @Override
         public void onBindViewHolder(@NonNull StoryHolder storyHolder, int position) {
-            if (!isLoading) {
+            if (!presenter.isLoading()) {
                 storyHolder.bindStatus(story.get(position));
             }
         }
@@ -327,7 +344,7 @@ public class StoryFragment extends Fragment {
          */
         @Override
         public int getItemViewType(int position) {
-            return (position == story.size() - 1 && isLoading) ? LOADING_DATA_VIEW : ITEM_VIEW;
+            return (position == story.size() - 1 && presenter.isLoading()) ? LOADING_DATA_VIEW : ITEM_VIEW;
         }
 
         /**
@@ -335,15 +352,7 @@ public class StoryFragment extends Fragment {
          * data.
          */
         void loadMoreItems() {
-            if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
-                isLoading = true;
-                addLoadingFooter();
-
-                GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
-                        user, PAGE_SIZE, lastStatus, new GetStoryHandler());
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(getStoryTask);
-            }
+            presenter.loadMoreItems(user);
         }
 
         /**
@@ -367,37 +376,7 @@ public class StoryFragment extends Fragment {
         }
 
 
-        /**
-         * Message handler (i.e., observer) for GetStoryTask.
-         */
-        private class GetStoryHandler extends Handler {
 
-            public GetStoryHandler() {
-                super(Looper.getMainLooper());
-            }
-
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                isLoading = false;
-                removeLoadingFooter();
-
-                boolean success = msg.getData().getBoolean(GetStoryTask.SUCCESS_KEY);
-                if (success) {
-                    List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetStoryTask.STATUSES_KEY);
-                    hasMorePages = msg.getData().getBoolean(GetStoryTask.MORE_PAGES_KEY);
-
-                    lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
-
-                    storyRecyclerViewAdapter.addItems(statuses);
-                } else if (msg.getData().containsKey(GetStoryTask.MESSAGE_KEY)) {
-                    String message = msg.getData().getString(GetStoryTask.MESSAGE_KEY);
-                    Toast.makeText(getContext(), "Failed to get story: " + message, Toast.LENGTH_LONG).show();
-                } else if (msg.getData().containsKey(GetStoryTask.EXCEPTION_KEY)) {
-                    Exception ex = (Exception) msg.getData().getSerializable(GetStoryTask.EXCEPTION_KEY);
-                    Toast.makeText(getContext(), "Failed to get story because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
     }
 
     /**
@@ -434,7 +413,7 @@ public class StoryFragment extends Fragment {
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-            if (!storyRecyclerViewAdapter.isLoading && storyRecyclerViewAdapter.hasMorePages) {
+            if (!presenter.isLoading() && presenter.hasMorePages()) {
                 if ((visibleItemCount + firstVisibleItemPosition) >=
                         totalItemCount && firstVisibleItemPosition >= 0) {
                     // Run this code later on the UI thread
