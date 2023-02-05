@@ -109,6 +109,11 @@ public class GetStoryPresenter {
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
             view.addItems(statuses);
         }
+
+        @Override
+        public void updateFollowersCount(int count) {
+
+        }
     }
 
 }

@@ -115,5 +115,10 @@ public class GetFeedPresenter {
             setHasMorePages(hasMorePages);
             view.addItems(statuses);
         }
+
+        @Override
+        public void updateFollowersCount(int count) {
+
+        }
     }
 }

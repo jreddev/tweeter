@@ -83,6 +83,11 @@ public class GetFollowersPresenter {
         public void addItems(List<Status> statuses, boolean hasMorePages) {
             //Not Needed here
         }
+
+        @Override
+        public void updateFollowersCount(int count) {
+
+        }
     }
 
     public class GetUserObserver implements UserService.Observer {
