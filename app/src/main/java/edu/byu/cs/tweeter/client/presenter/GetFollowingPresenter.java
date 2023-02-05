@@ -82,6 +82,16 @@ public class GetFollowingPresenter {
         @Override
         public void updateFolloweeCount(int count) {
         }
+
+        @Override
+        public void updateFollowButton(boolean b) {
+
+        }
+
+        @Override
+        public void updateFollow(boolean success, boolean updateFollow) {
+
+        }
     }
 
     public class GetUserObserver implements UserService.Observer

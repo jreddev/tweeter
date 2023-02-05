@@ -116,5 +116,15 @@ public class GetFeedPresenter {
         @Override
         public void updateFolloweeCount(int count) {
         }
+
+        @Override
+        public void updateFollowButton(boolean b) {
+
+        }
+
+        @Override
+        public void updateFollow(boolean success, boolean updateFollow) {
+
+        }
     }
 }
