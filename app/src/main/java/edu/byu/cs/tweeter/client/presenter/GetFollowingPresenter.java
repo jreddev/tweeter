@@ -94,7 +94,9 @@ public class GetFollowingPresenter {
         }
         @Override
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
-
+        }
+        @Override
+        public void logout() {
         }
     }
 }

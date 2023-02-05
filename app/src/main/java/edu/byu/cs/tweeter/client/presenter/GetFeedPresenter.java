@@ -81,6 +81,9 @@ public class GetFeedPresenter {
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
 
         }
+        @Override
+        public void logout() {
+        }
     }
 
     public class GetFeedObserver implements FollowService.Observer {

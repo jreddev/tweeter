@@ -101,5 +101,9 @@ public class GetFollowersPresenter {
         @Override
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
         }
+        @Override
+        public void logout() {
+
+        }
     }
 }

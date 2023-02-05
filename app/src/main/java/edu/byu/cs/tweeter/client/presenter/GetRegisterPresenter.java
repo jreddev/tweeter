@@ -45,5 +45,8 @@ public class GetRegisterPresenter {
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
             view.startIntentActivity(registeredUser, authToken);
         }
+        @Override
+        public void logout() {
+        }
     }
 }

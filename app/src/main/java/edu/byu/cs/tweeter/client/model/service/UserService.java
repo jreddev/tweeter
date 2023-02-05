@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -12,16 +13,20 @@ import java.util.concurrent.Executors;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.LoginTask;
+import edu.byu.cs.tweeter.client.model.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.RegisterTask;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class UserService {
+
     public interface Observer {
         void displayMessage(String message);
         void displayException(Exception ex, String message);
         void startActivity(User user);
         void startIntentActivity(User registeredUser, AuthToken authToken);
+        void logout();
     }
 
     public void onClick(String userAlias, Observer observer) {
@@ -42,6 +47,12 @@ public class UserService {
                 alias, password, imageBytesBase64, new RegisterHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(registerTask);
+    }
+
+    public void onOptionsItemSelected(Observer observer) {
+        LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(logoutTask);
     }
 
     private class GetUserHandler extends Handler {
@@ -122,6 +133,28 @@ public class UserService {
             } else if (msg.getData().containsKey(LoginTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(LoginTask.EXCEPTION_KEY);
                 observer.displayMessage("Failed to login because of exception: " + ex.getMessage());
+            }
+        }
+    }
+    private class LogoutHandler extends Handler {
+        Observer observer;
+
+        public LogoutHandler(Observer observer) {
+            super(Looper.getMainLooper());
+            this.observer = observer;
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(LogoutTask.SUCCESS_KEY);
+            if (success) {
+                observer.logout();
+            } else if (msg.getData().containsKey(LogoutTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(LogoutTask.MESSAGE_KEY);
+                observer.displayMessage("Failed to logout: " + message);
+            } else if (msg.getData().containsKey(LogoutTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(LogoutTask.EXCEPTION_KEY);
+                observer.displayException(ex,"Failed to logout because of exception: ");
             }
         }
     }

@@ -78,6 +78,9 @@ public class GetStoryPresenter {
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
 
         }
+        @Override
+        public void logout() {
+        }
     }
 
     public class GetStoryObserver implements FollowService.Observer {

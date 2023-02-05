@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -11,11 +12,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFeedTask;
+import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowersCountTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetStoryTask;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -26,6 +30,7 @@ public class FollowService {
         void displayException(Exception ex, String message);
         void addFollowees(List<User> followees, boolean hasMorePages);
         void addItems(List<Status> statuses, boolean hasMorePages);
+        void updateFollowersCount(int count);
     }
     public void loadMoreItems(User user, int pageSize, User lastFollow, String type, Observer observer) {
         if (Objects.equals(type, "following")){
@@ -62,6 +67,13 @@ public class FollowService {
             throw new RuntimeException("Wrong input: feed or story in FollowService");
         }
 
+    }
+
+    public void updateSelectedUserFollowingAndFollowers(User selectedUser, Observer observer) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
+                selectedUser, new GetFollowersCountHandler(observer));
+        executor.execute(followersCountTask);
     }
 
     /**
@@ -167,5 +179,27 @@ public class FollowService {
             }
         }
     }
+    private class GetFollowersCountHandler extends Handler {
+        Observer observer;
 
+        public GetFollowersCountHandler(Observer observer) {
+            super(Looper.getMainLooper());
+            this.observer = observer;
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(GetFollowersCountTask.SUCCESS_KEY);
+            if (success) {
+                int count = msg.getData().getInt(GetFollowersCountTask.COUNT_KEY);
+                observer.updateFollowersCount(count);
+            } else if (msg.getData().containsKey(GetFollowersCountTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
+                observer.displayMessage("Failed to get followers count: " + message);
+            } else if (msg.getData().containsKey(GetFollowersCountTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(GetFollowersCountTask.EXCEPTION_KEY);
+                observer.displayMessage("Failed to get followers count because of exception: " + ex.getMessage());
+            }
+        }
+    }
 }

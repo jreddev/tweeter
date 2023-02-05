@@ -41,5 +41,8 @@ public class GetLoginPresenter {
         public void startIntentActivity(User loggedInUser, AuthToken authToken) {
             view.startIntentActivity(loggedInUser,authToken);
         }
+        @Override
+        public void logout() {
+        }
     }
 }
