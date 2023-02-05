@@ -62,14 +62,12 @@ public class GetFollowersPresenter {
             view.setLoadingFooter(isLoading);
             view.displayMessage(message);
         }
-
         @Override
         public void displayException(Exception ex, String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message + ex.getMessage());
         }
-
         @Override
         public void addFollowees(List<User> followers, boolean hasMorePages) {
             isLoading = false;
@@ -78,15 +76,15 @@ public class GetFollowersPresenter {
             setHasMorePages(hasMorePages);
             view.addMoreItems(followers);
         }
-
         @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
             //Not Needed here
         }
-
         @Override
         public void updateFollowersCount(int count) {
-
+        }
+        @Override
+        public void updateFolloweeCount(int count) {
         }
     }
 

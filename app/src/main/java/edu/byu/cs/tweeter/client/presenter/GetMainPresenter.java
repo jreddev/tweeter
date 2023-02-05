@@ -14,6 +14,7 @@ public class GetMainPresenter {
         void displayMessage(String message);
         void logout();
         void updateFollowersCount(int count);
+        void updateFolloweeCount(int count);
     }
 
     private View view;
@@ -87,6 +88,11 @@ public class GetMainPresenter {
         @Override
         public void updateFollowersCount(int count) {
             view.updateFollowersCount(count);
+        }
+
+        @Override
+        public void updateFolloweeCount(int count) {
+            view.updateFolloweeCount(count);
         }
     }
 }

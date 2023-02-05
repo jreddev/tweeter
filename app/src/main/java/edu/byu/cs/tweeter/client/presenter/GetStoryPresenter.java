@@ -99,7 +99,6 @@ public class GetStoryPresenter {
         }
         @Override
         public void addFollowees(List<User> followees, boolean hasMorePages) {
-
         }
         @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
@@ -109,10 +108,11 @@ public class GetStoryPresenter {
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
             view.addItems(statuses);
         }
-
         @Override
         public void updateFollowersCount(int count) {
-
+        }
+        @Override
+        public void updateFolloweeCount(int count) {
         }
     }
 

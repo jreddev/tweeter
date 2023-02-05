@@ -17,6 +17,7 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFeedTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowersCountTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowersTask;
+import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowingCountTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
@@ -31,6 +32,7 @@ public class FollowService {
         void addFollowees(List<User> followees, boolean hasMorePages);
         void addItems(List<Status> statuses, boolean hasMorePages);
         void updateFollowersCount(int count);
+        void updateFolloweeCount(int count);
     }
     public void loadMoreItems(User user, int pageSize, User lastFollow, String type, Observer observer) {
         if (Objects.equals(type, "following")){
@@ -74,6 +76,9 @@ public class FollowService {
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new GetFollowersCountHandler(observer));
         executor.execute(followersCountTask);
+        GetFollowingCountTask followingCountTask = new GetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
+                selectedUser, new GetFollowingCountHandler(observer));
+        executor.execute(followingCountTask);
     }
 
     /**
@@ -199,6 +204,29 @@ public class FollowService {
             } else if (msg.getData().containsKey(GetFollowersCountTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetFollowersCountTask.EXCEPTION_KEY);
                 observer.displayMessage("Failed to get followers count because of exception: " + ex.getMessage());
+            }
+        }
+    }
+    private class GetFollowingCountHandler extends Handler {
+        private Observer observer;
+
+        public GetFollowingCountHandler(Observer observer) {
+            super(Looper.getMainLooper());
+            this.observer = observer;
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(GetFollowingCountTask.SUCCESS_KEY);
+            if (success) {
+                int count = msg.getData().getInt(GetFollowingCountTask.COUNT_KEY);
+                observer.updateFolloweeCount(count);
+            } else if (msg.getData().containsKey(GetFollowingCountTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(GetFollowingCountTask.MESSAGE_KEY);
+                observer.displayMessage("Failed to get following count: " + message);
+            } else if (msg.getData().containsKey(GetFollowingCountTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(GetFollowingCountTask.EXCEPTION_KEY);
+                observer.displayException(ex, "Failed to get following count because of exception: ");
             }
         }
     }

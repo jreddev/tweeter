@@ -74,12 +74,13 @@ public class GetFollowingPresenter {
         }
         @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
-
+        }
+        @Override
+        public void updateFollowersCount(int count) {
         }
 
         @Override
-        public void updateFollowersCount(int count) {
-
+        public void updateFolloweeCount(int count) {
         }
     }
 
