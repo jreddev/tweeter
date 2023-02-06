@@ -71,12 +71,12 @@ public class GetStoryPresenter {
 
         @Override
         public void startActivity(User user) {
-
+            view.startIntentActivity(user);
         }
 
         @Override
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
-
+            view.startIntentActivity(registeredUser);
         }
         @Override
         public void logout() {

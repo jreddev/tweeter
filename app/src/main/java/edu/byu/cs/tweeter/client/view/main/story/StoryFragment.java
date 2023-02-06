@@ -113,6 +113,7 @@ public class StoryFragment extends Fragment implements GetStoryPresenter.View {
 
     @Override
     public void startIntentActivity(User user) {
+        this.user = user;
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
         startActivity(intent);
