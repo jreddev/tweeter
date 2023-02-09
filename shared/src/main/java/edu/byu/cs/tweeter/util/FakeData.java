@@ -20,8 +20,11 @@ public class FakeData {
     /**
      * Test user profile images.
      */
-    private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
-    private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
+    //private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
+    //private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
+    private static final String MALE_IMAGE_URL = "https://students.cs.byu.edu/~jareddev/cs340/icons/man.png";
+
+    private static final String FEMALE_IMAGE_URL = "https://students.cs.byu.edu/~jareddev/cs340/icons/woman.png";
 
     /**
      * Generated users.
