@@ -28,7 +28,7 @@ public class GetRegisterPresenter {
         userService.Register(firstName, lastName, alias, password, image, new GetRegisterObserver());
     }
 
-    public class GetRegisterObserver implements UserService.RegisterObserver {
+    public class GetRegisterObserver implements UserService.AuthObserver {
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);

@@ -58,40 +58,17 @@ public class LoginFragment extends Fragment implements GetLoginPresenter.View {
 
             @Override
             public void onClick(View view) {
-                // Login and move to MainActivity.
-                try {
-                    validateLogin();
-                    errorView.setText(null);
-
-                    loginToast = Toast.makeText(getContext(), "Logging In...", Toast.LENGTH_LONG);
-                    loginToast.show();
-
-                    presenter.login(alias.getText().toString(),password.getText().toString());
-
-                } catch (Exception e) {
-                    errorView.setText(e.getMessage());
-                }
+                presenter.login(alias.getText().toString(),password.getText().toString());
             }
         });
 
         return view;
     }
 
-    public void validateLogin() {
-        if (alias.getText().length() > 0 && alias.getText().charAt(0) != '@') {
-            throw new IllegalArgumentException("Alias must begin with @.");
-        }
-        if (alias.getText().length() < 2) {
-            throw new IllegalArgumentException("Alias must contain 1 or more characters after the @.");
-        }
-        if (password.getText().length() == 0) {
-            throw new IllegalArgumentException("Password cannot be empty.");
-        }
-    }
-
     @Override
     public void displayMessage(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        loginToast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+        loginToast.show();
     }
 
     @Override
@@ -99,9 +76,16 @@ public class LoginFragment extends Fragment implements GetLoginPresenter.View {
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.putExtra(MainActivity.CURRENT_USER_KEY, loggedInUser);
 
-        loginToast.cancel();
+        if (loginToast != null)
+            loginToast.cancel();
 
         Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(), Toast.LENGTH_LONG).show();
         startActivity(intent);
+    }
+
+    @Override
+    public void setErrorViewText(Exception e) {
+        if (e != null)
+            errorView.setText(e.getMessage());
     }
 }
