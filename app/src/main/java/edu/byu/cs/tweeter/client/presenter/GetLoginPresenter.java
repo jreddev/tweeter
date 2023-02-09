@@ -11,6 +11,8 @@ public class GetLoginPresenter {
         void displayMessage(String message);
 
         void startIntentActivity(User loggedInUser, AuthToken authToken);
+
+        void setErrorViewText(Exception e);
     }
 
     private View view;
@@ -24,7 +26,7 @@ public class GetLoginPresenter {
         userService.login(alias,password, new GetLoginObserver());
     }
 
-    public class GetLoginObserver implements UserService.Observer {
+    public class GetLoginObserver implements UserService.AuthObserver {
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);
@@ -36,6 +38,11 @@ public class GetLoginPresenter {
         @Override
         public void startIntentActivity(User loggedInUser, AuthToken authToken) {
             view.startIntentActivity(loggedInUser,authToken);
+        }
+
+        @Override
+        public void setErrorViewText(Exception e) {
+            view.setErrorViewText(e);
         }
     }
 }
