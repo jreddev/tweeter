@@ -3,7 +3,6 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -12,7 +11,6 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.backgroundTask.FollowTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetFeedTask;
@@ -23,8 +21,6 @@ import edu.byu.cs.tweeter.client.model.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.UnfollowTask;
-import edu.byu.cs.tweeter.client.presenter.GetMainPresenter;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -33,14 +29,22 @@ public class FollowService {
     public interface Observer {
         void displayMessage(String message);
         void displayException(Exception ex, String message);
+
+
+    }
+    public interface FolloweeObserver extends Observer {
         void addFollowees(List<User> followees, boolean hasMorePages);
+    }
+    public interface FeedStoryObserver extends Observer{
         void addItems(List<Status> statuses, boolean hasMorePages);
+    }
+    public interface MainObserver extends Observer{
+        void updateFollow(boolean success, boolean updateFollow);
         void updateFollowersCount(int count);
         void updateFolloweeCount(int count);
         void updateFollowButton(boolean b);
-        void updateFollow(boolean success, boolean updateFollow);
     }
-    public void loadMoreItems(User user, int pageSize, User lastFollow, String type, Observer observer) {
+    public void loadMoreItems(User user, int pageSize, User lastFollow, String type, FolloweeObserver observer) {
         if (Objects.equals(type, "following")){
             GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                     user, pageSize, lastFollow, new GetFollowingHandler(observer));
@@ -57,7 +61,7 @@ public class FollowService {
             throw new RuntimeException("Wrong input: following or followers in FollowService");
         }
     }
-    public void loadMoreItems(User user, int pageSize, Status lastStatus, String type, Observer observer) {
+    public void loadMoreItems(User user, int pageSize, Status lastStatus, String type, FeedStoryObserver observer) {
         if (Objects.equals(type, "story")){
             GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
                     user, pageSize, lastStatus, new GetStoryHandler(observer));
@@ -74,7 +78,7 @@ public class FollowService {
             throw new RuntimeException("Wrong input: feed or story in FollowService");
         }
     }
-    public void updateSelectedUserFollowingAndFollowers(User selectedUser, Observer observer) {
+    public void updateFollowingAndFollowers(User selectedUser, MainObserver observer) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new GetFollowersCountHandler(observer));
@@ -83,19 +87,19 @@ public class FollowService {
                 selectedUser, new GetFollowingCountHandler(observer));
         executor.execute(followingCountTask);
     }
-    public void onClickUnfollow(User selectedUser, Observer observer) {
+    public void onClickUnfollow(User selectedUser, MainObserver observer) {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new UnfollowHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(unfollowTask);
     }
-    public void onClickFollow(User selectedUser, Observer observer) {
+    public void onClickFollow(User selectedUser, MainObserver observer) {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new FollowHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(followTask);
     }
-    public void isFollower(User selectedUser, Observer observer) {
+    public void isFollower(User selectedUser, MainObserver observer) {
         IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -103,8 +107,8 @@ public class FollowService {
     }
 
     private class GetFollowingHandler extends Handler {
-        private Observer observer;
-        public GetFollowingHandler(Observer observer) {
+        private FolloweeObserver observer;
+        public GetFollowingHandler(FolloweeObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -129,9 +133,9 @@ public class FollowService {
     }
     private class GetFollowersHandler extends Handler {
 
-        private Observer observer;
+        private FolloweeObserver observer;
 
-        public GetFollowersHandler(Observer observer) {
+        public GetFollowersHandler(FolloweeObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -154,9 +158,9 @@ public class FollowService {
         }
     }
     private class GetStoryHandler extends Handler {
-        private Observer observer;
+        private FeedStoryObserver observer;
 
-        public GetStoryHandler(Observer observer) {
+        public GetStoryHandler(FeedStoryObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -179,9 +183,9 @@ public class FollowService {
     }
     private class GetFeedHandler extends Handler {
 
-        private Observer observer;
+        private FeedStoryObserver observer;
 
-        public GetFeedHandler(Observer observer) {
+        public GetFeedHandler(FeedStoryObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -203,9 +207,9 @@ public class FollowService {
         }
     }
     private class GetFollowersCountHandler extends Handler {
-        Observer observer;
+        MainObserver observer;
 
-        public GetFollowersCountHandler(Observer observer) {
+        public GetFollowersCountHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -226,9 +230,9 @@ public class FollowService {
         }
     }
     private class GetFollowingCountHandler extends Handler {
-        private Observer observer;
+        private MainObserver observer;
 
-        public GetFollowingCountHandler(Observer observer) {
+        public GetFollowingCountHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -249,9 +253,9 @@ public class FollowService {
         }
     }
     private class IsFollowerHandler extends Handler {
-        private Observer observer;
+        private MainObserver observer;
 
-        public IsFollowerHandler(Observer observer) {
+        public IsFollowerHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -272,9 +276,9 @@ public class FollowService {
         }
     }
     private class FollowHandler extends Handler {
-        private Observer observer;
+        private MainObserver observer;
 
-        public FollowHandler(Observer observer) {
+        public FollowHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -296,9 +300,9 @@ public class FollowService {
         }
     }
     private class UnfollowHandler extends Handler {
-        private Observer observer;
+        private MainObserver observer;
 
-        public UnfollowHandler(Observer observer) {
+        public UnfollowHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }

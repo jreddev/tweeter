@@ -5,7 +5,6 @@ import java.util.List;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowersPresenter {
@@ -42,7 +41,7 @@ public class GetFollowersPresenter {
         followService = new FollowService();
     }
 
-    public void loadMoreItems(User user) {
+    public void loadMoreFollowers(User user) {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
@@ -50,11 +49,11 @@ public class GetFollowersPresenter {
         }
     }
 
-    public void onClick(String userAlias) {
-        userService.onClick(userAlias, new GetUserObserver());
+    public void getProfile(String userAlias) {
+        userService.getProfile(userAlias, new GetUserObserver());
     }
 
-    public class GetFollowersObserver implements FollowService.Observer {
+    public class GetFollowersObserver implements FollowService.FolloweeObserver {
 
         @Override
         public void displayMessage(String message) {
@@ -76,26 +75,6 @@ public class GetFollowersPresenter {
             setHasMorePages(hasMorePages);
             view.addMoreItems(followers);
         }
-        @Override
-        public void addItems(List<Status> statuses, boolean hasMorePages) {
-            //Not Needed here
-        }
-        @Override
-        public void updateFollowersCount(int count) {
-        }
-        @Override
-        public void updateFolloweeCount(int count) {
-        }
-
-        @Override
-        public void updateFollowButton(boolean b) {
-
-        }
-
-        @Override
-        public void updateFollow(boolean success, boolean updateFollow) {
-
-        }
     }
 
     public class GetUserObserver implements UserService.Observer {
@@ -108,15 +87,8 @@ public class GetFollowersPresenter {
             view.displayMessage(message + ex.getMessage());
         }
         @Override
-        public void startActivity(User user) {
+        public void startIntentActivity(User user, AuthToken authToken) {
             view.startIntentActivity(user);
-        }
-        @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
-        }
-        @Override
-        public void logout() {
-
         }
     }
 }

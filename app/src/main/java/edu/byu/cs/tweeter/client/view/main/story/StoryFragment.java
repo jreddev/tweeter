@@ -88,7 +88,7 @@ public class StoryFragment extends Fragment implements GetStoryPresenter.View {
         storyRecyclerView.addOnScrollListener(new StoryRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new GetStoryPresenter(this);
-        presenter.loadMoreItems(user);
+        presenter.loadMoreStories(user);
 
         return view;
     }
@@ -147,7 +147,7 @@ public class StoryFragment extends Fragment implements GetStoryPresenter.View {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.onClick(userAlias.getText().toString());
+                    presenter.getProfile(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }
             });
@@ -179,7 +179,7 @@ public class StoryFragment extends Fragment implements GetStoryPresenter.View {
 
                         String clickable = s.subSequence(start, end).toString();
 
-                        presenter.onClick(clickable);
+                        presenter.getProfile(clickable);
                         Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                     }
 
@@ -314,7 +314,7 @@ public class StoryFragment extends Fragment implements GetStoryPresenter.View {
          * data.
          */
         void loadMoreItems() {
-            presenter.loadMoreItems(user);
+            presenter.loadMoreStories(user);
         }
 
         /**

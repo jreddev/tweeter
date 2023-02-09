@@ -9,32 +9,25 @@ import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFeedPresenter {
-
     private Status lastStatus;
-
     private static final int PAGE_SIZE = 10;
     private boolean hasMorePages;
     private boolean isLoading = false;
-
     public boolean isLoading() {
         return isLoading;
     }
-
     public void setHasMorePages(boolean hasMorePages) {
         this.hasMorePages = hasMorePages;
     }
-
     public boolean hasMorePages() {
         return hasMorePages;
     }
-
     public interface View {
         void setLoadingFooter(boolean isLoading);
         void displayMessage(String message);
         void addItems(List<Status> statuses);
         void startIntentActivity(User user);
     }
-
     private View view;
     private UserService userService;
     private FollowService followService;
@@ -44,11 +37,11 @@ public class GetFeedPresenter {
         followService = new FollowService();
     }
 
-    public void onClick(String userAlias) {
-        userService.onClick(userAlias, new GetUserObserver());
+    public void getProfile(String userAlias) {
+        userService.getProfile(userAlias, new GetUserObserver());
     }
 
-    public void loadMoreItems(User user) {
+    public void loadMoreFeeds(User user) {
         if (!isLoading){
             isLoading = true;
             view.setLoadingFooter(isLoading);
@@ -71,22 +64,14 @@ public class GetFeedPresenter {
         }
 
         @Override
-        public void startActivity(User user) {
+        public void startIntentActivity(User user, AuthToken authToken) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.startIntentActivity(user);
         }
-
-        @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
-
-        }
-        @Override
-        public void logout() {
-        }
     }
 
-    public class GetFeedObserver implements FollowService.Observer {
+    public class GetFeedObserver implements FollowService.FeedStoryObserver {
         @Override
         public void displayMessage(String message) {
             isLoading = false;
@@ -100,31 +85,12 @@ public class GetFeedPresenter {
             view.displayMessage(message + ex.getMessage());
         }
         @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
-        }
-        @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
             setHasMorePages(hasMorePages);
             view.addItems(statuses);
-        }
-        @Override
-        public void updateFollowersCount(int count) {
-        }
-        @Override
-        public void updateFolloweeCount(int count) {
-        }
-
-        @Override
-        public void updateFollowButton(boolean b) {
-
-        }
-
-        @Override
-        public void updateFollow(boolean success, boolean updateFollow) {
-
         }
     }
 }

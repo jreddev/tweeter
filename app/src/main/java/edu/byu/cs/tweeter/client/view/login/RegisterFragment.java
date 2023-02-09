@@ -6,9 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,16 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.util.Base64;
 import java.io.ByteArrayOutputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.R;
-import edu.byu.cs.tweeter.client.model.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.presenter.GetRegisterPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
@@ -106,7 +99,7 @@ public class RegisterFragment extends Fragment implements GetRegisterPresenter.V
                     byte[] imageBytes = bos.toByteArray();
                     String imageBytesBase64 = Base64.getEncoder().encodeToString(imageBytes);
 
-                    presenter.onClick(firstName.getText().toString(), lastName.getText().toString(), alias.getText().toString(), password.getText().toString(), imageBytesBase64);
+                    presenter.Register(firstName.getText().toString(), lastName.getText().toString(), alias.getText().toString(), password.getText().toString(), imageBytesBase64);
 
                 } catch (Exception e) {
                     errorView.setText(e.getMessage());

@@ -3,7 +3,6 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -15,7 +14,6 @@ import edu.byu.cs.tweeter.client.model.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.RegisterTask;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -24,32 +22,34 @@ public class UserService {
     public interface Observer {
         void displayMessage(String message);
         void displayException(Exception ex, String message);
-        void startActivity(User user);
         void startIntentActivity(User registeredUser, AuthToken authToken);
+
+    }
+    public interface MainObserver extends Observer {
         void logout();
     }
 
-    public void onClick(String userAlias, Observer observer) {
+    public void getProfile(String userAlias, Observer observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                 userAlias, new GetUserHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getUserTask);
     }
 
-    public void onClick(String alias, String password, Observer observer) {
+    public void login(String alias, String password, Observer observer) {
         LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(loginTask);
     }
 
-    public void onClick(String firstName, String lastName, String alias, String password, String imageBytesBase64, Observer observer) {
+    public void Register(String firstName, String lastName, String alias, String password, String imageBytesBase64, Observer observer) {
         RegisterTask registerTask = new RegisterTask(firstName, lastName,
                 alias, password, imageBytesBase64, new RegisterHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(registerTask);
     }
 
-    public void onOptionsItemSelected(Observer observer) {
+    public void onOptionsItemSelected(MainObserver observer) {
         LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(logoutTask);
@@ -69,7 +69,7 @@ public class UserService {
             boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
             if (success) {
                 User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-                observer.startActivity(user);
+                observer.startIntentActivity(user, null);
             } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
                 observer.displayMessage("Failed to get user's profile: " + message);
@@ -137,9 +137,9 @@ public class UserService {
         }
     }
     private class LogoutHandler extends Handler {
-        Observer observer;
+        MainObserver observer;
 
-        public LogoutHandler(Observer observer) {
+        public LogoutHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }

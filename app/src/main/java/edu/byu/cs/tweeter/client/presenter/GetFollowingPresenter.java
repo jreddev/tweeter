@@ -5,7 +5,6 @@ import java.util.List;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowingPresenter {
@@ -39,18 +38,18 @@ public class GetFollowingPresenter {
         followService = new FollowService();
         userService = new UserService();
     }
-    public void loadMoreItems(User user) {
+    public void loadMoreFollowing(User user) {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
             followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, "following", new GetFollowingObserver());
         }
     }
-    public void onClick(String userAlias) {
-        userService.onClick(userAlias, new GetUserObserver());
+    public void getProfile(String userAlias) {
+        userService.getProfile(userAlias, new GetUserObserver());
     }
 
-    public class GetFollowingObserver implements FollowService.Observer {
+    public class GetFollowingObserver implements FollowService.FolloweeObserver {
         @Override
         public void displayMessage(String message) {
             isLoading = false;
@@ -72,26 +71,6 @@ public class GetFollowingPresenter {
             setHasMorePages(hasMorePages);
             view.addMoreItems(followees);
         }
-        @Override
-        public void addItems(List<Status> statuses, boolean hasMorePages) {
-        }
-        @Override
-        public void updateFollowersCount(int count) {
-        }
-
-        @Override
-        public void updateFolloweeCount(int count) {
-        }
-
-        @Override
-        public void updateFollowButton(boolean b) {
-
-        }
-
-        @Override
-        public void updateFollow(boolean success, boolean updateFollow) {
-
-        }
     }
 
     public class GetUserObserver implements UserService.Observer
@@ -105,14 +84,8 @@ public class GetFollowingPresenter {
             view.displayMessage(message + ex.getMessage());
         }
         @Override
-        public void startActivity(User user) {
+        public void startIntentActivity(User user, AuthToken authToken) {
             view.startIntentActivity(user);
-        }
-        @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
-        }
-        @Override
-        public void logout() {
         }
     }
 }

@@ -90,7 +90,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
 
 
-        presenter.loadMoreItems(user);
+        presenter.loadMoreFeeds(user);
 
         return view;
     }
@@ -149,7 +149,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.onClick(userAlias.getText().toString());
+                    presenter.getProfile(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }
             });
@@ -181,7 +181,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
 
                         String clickable = s.subSequence(start, end).toString();
 
-                        presenter.onClick(clickable);
+                        presenter.getProfile(clickable);
 
                         // MAKE SURE THIS WORKS: Looks Different :/
                         //GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
@@ -319,7 +319,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
          * data.
          */
         void loadMoreItems() {
-            presenter.loadMoreItems(user);
+            presenter.loadMoreFeeds(user);
         }
 
         /**

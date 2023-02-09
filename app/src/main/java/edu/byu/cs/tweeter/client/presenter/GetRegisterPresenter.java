@@ -20,33 +20,22 @@ public class GetRegisterPresenter {
         userService = new UserService();
     }
 
-    public void onClick(String firstName, String lastName, String alias, String password, String imageBytesBase64) {
-        userService.onClick(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
+    public void Register(String firstName, String lastName, String alias, String password, String imageBytesBase64) {
+        userService.Register(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
     }
 
     public class GetRegisterObserver implements UserService.Observer {
-
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);
         }
-
         @Override
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
-
-        @Override
-        public void startActivity(User user) {
-            //NOTHING TO DO HERE
-        }
-
         @Override
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
             view.startIntentActivity(registeredUser, authToken);
-        }
-        @Override
-        public void logout() {
         }
     }
 }
