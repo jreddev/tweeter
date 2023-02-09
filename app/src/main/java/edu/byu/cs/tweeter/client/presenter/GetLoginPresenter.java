@@ -34,15 +34,8 @@ public class GetLoginPresenter {
             //DOES NOTHING HERE
         }
         @Override
-        public void startActivity(User user) {
-            //DOES NOTHING HERE
-        }
-        @Override
         public void startIntentActivity(User loggedInUser, AuthToken authToken) {
             view.startIntentActivity(loggedInUser,authToken);
-        }
-        @Override
-        public void logout() {
         }
     }
 }

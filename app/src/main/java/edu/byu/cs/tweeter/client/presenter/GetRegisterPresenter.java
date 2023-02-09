@@ -25,28 +25,17 @@ public class GetRegisterPresenter {
     }
 
     public class GetRegisterObserver implements UserService.Observer {
-
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);
         }
-
         @Override
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
-
-        @Override
-        public void startActivity(User user) {
-            //NOTHING TO DO HERE
-        }
-
         @Override
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
             view.startIntentActivity(registeredUser, authToken);
-        }
-        @Override
-        public void logout() {
         }
     }
 }

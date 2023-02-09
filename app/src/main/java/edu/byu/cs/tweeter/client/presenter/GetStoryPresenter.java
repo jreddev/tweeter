@@ -58,33 +58,21 @@ public class GetStoryPresenter {
     }
 
     public class GetUserObserver implements UserService.Observer{
-
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);
         }
-
         @Override
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
-
         @Override
-        public void startActivity(User user) {
+        public void startIntentActivity(User user, AuthToken authToken) {
             view.startIntentActivity(user);
-        }
-
-        @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
-            view.startIntentActivity(registeredUser);
-        }
-        @Override
-        public void logout() {
         }
     }
 
-    public class GetStoryObserver implements FollowService.Observer {
-
+    public class GetStoryObserver implements FollowService.FeedStoryObserver {
         @Override
         public void displayMessage(String message) {
             isLoading = false;
@@ -96,9 +84,6 @@ public class GetStoryPresenter {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message + ex.getMessage());
-        }
-        @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
         }
         @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
@@ -107,22 +92,6 @@ public class GetStoryPresenter {
             setHasMorePages(hasMorePages);
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
             view.addItems(statuses);
-        }
-        @Override
-        public void updateFollowersCount(int count) {
-        }
-        @Override
-        public void updateFolloweeCount(int count) {
-        }
-
-        @Override
-        public void updateFollowButton(boolean b) {
-
-        }
-
-        @Override
-        public void updateFollow(boolean success, boolean updateFollow) {
-
         }
     }
 

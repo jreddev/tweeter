@@ -24,8 +24,10 @@ public class UserService {
     public interface Observer {
         void displayMessage(String message);
         void displayException(Exception ex, String message);
-        void startActivity(User user);
         void startIntentActivity(User registeredUser, AuthToken authToken);
+
+    }
+    public interface MainObserver extends Observer {
         void logout();
     }
 
@@ -49,7 +51,7 @@ public class UserService {
         executor.execute(registerTask);
     }
 
-    public void onOptionsItemSelected(Observer observer) {
+    public void onOptionsItemSelected(MainObserver observer) {
         LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(logoutTask);
@@ -69,7 +71,7 @@ public class UserService {
             boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
             if (success) {
                 User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-                observer.startActivity(user);
+                observer.startIntentActivity(user, null);
             } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
                 observer.displayMessage("Failed to get user's profile: " + message);
@@ -137,9 +139,9 @@ public class UserService {
         }
     }
     private class LogoutHandler extends Handler {
-        Observer observer;
+        MainObserver observer;
 
-        public LogoutHandler(Observer observer) {
+        public LogoutHandler(MainObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }

@@ -56,7 +56,7 @@ public class GetMainPresenter {
         statusService.postStatusTask(newStatus, new GetStatusObserver());
     }
 
-    public class GetUserObserver implements UserService.Observer {
+    public class GetUserObserver implements UserService.MainObserver {
 
         @Override
         public void displayMessage(String message) {
@@ -66,11 +66,6 @@ public class GetMainPresenter {
         @Override
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
-        }
-
-        @Override
-        public void startActivity(User user) {
-
         }
 
         @Override
@@ -84,7 +79,7 @@ public class GetMainPresenter {
         }
     }
 
-    public class GetFollowObserver implements FollowService.Observer {
+    public class GetFollowObserver implements FollowService.MainObserver {
 
         @Override
         public void displayMessage(String message) {
@@ -95,17 +90,6 @@ public class GetMainPresenter {
         public void displayException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
-
-        @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
-
-        }
-
-        @Override
-        public void addItems(List<Status> statuses, boolean hasMorePages) {
-
-        }
-
         @Override
         public void updateFollowersCount(int count) {
             view.updateFollowersCount(count);

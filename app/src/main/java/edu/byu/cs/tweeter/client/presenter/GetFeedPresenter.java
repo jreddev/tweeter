@@ -71,22 +71,14 @@ public class GetFeedPresenter {
         }
 
         @Override
-        public void startActivity(User user) {
+        public void startIntentActivity(User user, AuthToken authToken) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.startIntentActivity(user);
         }
-
-        @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
-
-        }
-        @Override
-        public void logout() {
-        }
     }
 
-    public class GetFeedObserver implements FollowService.Observer {
+    public class GetFeedObserver implements FollowService.FeedStoryObserver {
         @Override
         public void displayMessage(String message) {
             isLoading = false;
@@ -100,31 +92,12 @@ public class GetFeedPresenter {
             view.displayMessage(message + ex.getMessage());
         }
         @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
-        }
-        @Override
         public void addItems(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;
             setHasMorePages(hasMorePages);
             view.addItems(statuses);
-        }
-        @Override
-        public void updateFollowersCount(int count) {
-        }
-        @Override
-        public void updateFolloweeCount(int count) {
-        }
-
-        @Override
-        public void updateFollowButton(boolean b) {
-
-        }
-
-        @Override
-        public void updateFollow(boolean success, boolean updateFollow) {
-
         }
     }
 }
