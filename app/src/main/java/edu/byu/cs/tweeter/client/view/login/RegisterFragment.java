@@ -85,25 +85,7 @@ public class RegisterFragment extends Fragment implements GetRegisterPresenter.V
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Register and move to MainActivity.
-                try {
-                    validateRegistration();
-                    errorView.setText(null);
-                    registeringToast = Toast.makeText(getContext(), "Registering...", Toast.LENGTH_LONG);
-                    registeringToast.show();
-
-                    // Convert image to byte array.
-                    Bitmap image = ((BitmapDrawable) imageToUpload.getDrawable()).getBitmap();
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                    byte[] imageBytes = bos.toByteArray();
-                    String imageBytesBase64 = Base64.getEncoder().encodeToString(imageBytes);
-
-                    presenter.Register(firstName.getText().toString(), lastName.getText().toString(), alias.getText().toString(), password.getText().toString(), imageBytesBase64);
-
-                } catch (Exception e) {
-                    errorView.setText(e.getMessage());
-                }
+                presenter.Register(firstName.getText().toString(), lastName.getText().toString(), alias.getText().toString(), password.getText().toString(), imageToUpload.getDrawable());
             }
         });
 
@@ -149,7 +131,8 @@ public class RegisterFragment extends Fragment implements GetRegisterPresenter.V
 
     @Override
     public void displayMessage(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        registeringToast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+        registeringToast.show();
     }
 
     @Override
@@ -169,5 +152,11 @@ public class RegisterFragment extends Fragment implements GetRegisterPresenter.V
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public void setErrorViewText(Exception e) {
+        if (e != null)
+            errorView.setText(e.getMessage());
     }
 }

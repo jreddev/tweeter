@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import android.graphics.drawable.Drawable;
+
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -11,6 +13,8 @@ public class GetRegisterPresenter {
         void displayMessage(String message);
 
         void startIntentActivity(User registeredUser, AuthToken authToken);
+
+        void setErrorViewText(Exception e);
     }
 
     private View view;
@@ -20,11 +24,11 @@ public class GetRegisterPresenter {
         userService = new UserService();
     }
 
-    public void Register(String firstName, String lastName, String alias, String password, String imageBytesBase64) {
-        userService.Register(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
+    public void Register(String firstName, String lastName, String alias, String password, Drawable image) {
+        userService.Register(firstName, lastName, alias, password, image, new GetRegisterObserver());
     }
 
-    public class GetRegisterObserver implements UserService.Observer {
+    public class GetRegisterObserver implements UserService.RegisterObserver {
         @Override
         public void displayMessage(String message) {
             view.displayMessage(message);
@@ -36,6 +40,11 @@ public class GetRegisterPresenter {
         @Override
         public void startIntentActivity(User registeredUser, AuthToken authToken) {
             view.startIntentActivity(registeredUser, authToken);
+        }
+
+        @Override
+        public void setErrorViewText(Exception e) {
+            view.setErrorViewText(e);
         }
     }
 }
