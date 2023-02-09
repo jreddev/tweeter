@@ -38,15 +38,15 @@ public class GetFollowingPresenter {
         followService = new FollowService();
         userService = new UserService();
     }
-    public void loadMoreItems(User user) {
+    public void loadMoreFollowing(User user) {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
             followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, "following", new GetFollowingObserver());
         }
     }
-    public void onClick(String userAlias) {
-        userService.onClick(userAlias, new GetUserObserver());
+    public void getProfile(String userAlias) {
+        userService.getProfile(userAlias, new GetUserObserver());
     }
 
     public class GetFollowingObserver implements FollowService.FolloweeObserver {

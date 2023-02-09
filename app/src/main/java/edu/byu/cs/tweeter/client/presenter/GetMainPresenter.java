@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import java.util.List;
-
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
@@ -37,8 +35,8 @@ public class GetMainPresenter {
         userService.onOptionsItemSelected(new GetUserObserver());
     }
 
-    public void updateSelectedUserFollowingAndFollowers(User selectedUser) {
-        followService.updateSelectedUserFollowingAndFollowers(selectedUser, new GetFollowObserver());
+    public void updateFollowingAndFollowers(User selectedUser) {
+        followService.updateFollowingAndFollowers(selectedUser, new GetFollowObserver());
     }
 
     public void onClickUnfollow(User selectedUser) {

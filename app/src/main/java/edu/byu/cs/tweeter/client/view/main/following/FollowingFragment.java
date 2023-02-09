@@ -79,7 +79,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
         followingRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new GetFollowingPresenter(this);
-        presenter.loadMoreItems(user);
+        presenter.loadMoreFollowing(user);
 
         return view;
     }
@@ -134,7 +134,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    presenter.onClick(userAlias.getText().toString());
+                    presenter.getProfile(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }
             });
@@ -264,7 +264,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
          * data.
          */
         void loadMoreItems() {
-            presenter.loadMoreItems(user);
+            presenter.loadMoreFollowing(user);
         }
 
         /**

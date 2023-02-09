@@ -3,7 +3,6 @@ package edu.byu.cs.tweeter.client.model.service;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -15,7 +14,6 @@ import edu.byu.cs.tweeter.client.model.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.backgroundTask.RegisterTask;
-import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -31,20 +29,20 @@ public class UserService {
         void logout();
     }
 
-    public void onClick(String userAlias, Observer observer) {
+    public void getProfile(String userAlias, Observer observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                 userAlias, new GetUserHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getUserTask);
     }
 
-    public void onClick(String alias, String password, Observer observer) {
+    public void login(String alias, String password, Observer observer) {
         LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(loginTask);
     }
 
-    public void onClick(String firstName, String lastName, String alias, String password, String imageBytesBase64, Observer observer) {
+    public void Register(String firstName, String lastName, String alias, String password, String imageBytesBase64, Observer observer) {
         RegisterTask registerTask = new RegisterTask(firstName, lastName,
                 alias, password, imageBytesBase64, new RegisterHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();

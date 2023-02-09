@@ -9,32 +9,25 @@ import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFeedPresenter {
-
     private Status lastStatus;
-
     private static final int PAGE_SIZE = 10;
     private boolean hasMorePages;
     private boolean isLoading = false;
-
     public boolean isLoading() {
         return isLoading;
     }
-
     public void setHasMorePages(boolean hasMorePages) {
         this.hasMorePages = hasMorePages;
     }
-
     public boolean hasMorePages() {
         return hasMorePages;
     }
-
     public interface View {
         void setLoadingFooter(boolean isLoading);
         void displayMessage(String message);
         void addItems(List<Status> statuses);
         void startIntentActivity(User user);
     }
-
     private View view;
     private UserService userService;
     private FollowService followService;
@@ -44,11 +37,11 @@ public class GetFeedPresenter {
         followService = new FollowService();
     }
 
-    public void onClick(String userAlias) {
-        userService.onClick(userAlias, new GetUserObserver());
+    public void getProfile(String userAlias) {
+        userService.getProfile(userAlias, new GetUserObserver());
     }
 
-    public void loadMoreItems(User user) {
+    public void loadMoreFeeds(User user) {
         if (!isLoading){
             isLoading = true;
             view.setLoadingFooter(isLoading);

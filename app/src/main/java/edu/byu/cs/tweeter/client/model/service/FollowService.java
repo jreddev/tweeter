@@ -78,7 +78,7 @@ public class FollowService {
             throw new RuntimeException("Wrong input: feed or story in FollowService");
         }
     }
-    public void updateSelectedUserFollowingAndFollowers(User selectedUser, MainObserver observer) {
+    public void updateFollowingAndFollowers(User selectedUser, MainObserver observer) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new GetFollowersCountHandler(observer));

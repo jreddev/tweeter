@@ -20,8 +20,8 @@ public class GetRegisterPresenter {
         userService = new UserService();
     }
 
-    public void onClick(String firstName, String lastName, String alias, String password, String imageBytesBase64) {
-        userService.onClick(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
+    public void Register(String firstName, String lastName, String alias, String password, String imageBytesBase64) {
+        userService.Register(firstName, lastName, alias, password, imageBytesBase64, new GetRegisterObserver());
     }
 
     public class GetRegisterObserver implements UserService.Observer {

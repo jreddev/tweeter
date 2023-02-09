@@ -20,8 +20,8 @@ public class GetLoginPresenter {
         userService = new UserService();
     }
 
-    public void onClick(String alias, String password) {
-        userService.onClick(alias,password, new GetLoginObserver());
+    public void login(String alias, String password) {
+        userService.login(alias,password, new GetLoginObserver());
     }
 
     public class GetLoginObserver implements UserService.Observer {

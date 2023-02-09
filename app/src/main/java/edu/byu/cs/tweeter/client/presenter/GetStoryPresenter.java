@@ -45,7 +45,7 @@ public class GetStoryPresenter {
         followService = new FollowService();
     }
 
-    public void loadMoreItems(User user) {
+    public void loadMoreStories(User user) {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
@@ -53,8 +53,8 @@ public class GetStoryPresenter {
         }
     }
 
-    public void onClick(String userAlias) {
-        userService.onClick(userAlias, new GetUserObserver() );
+    public void getProfile(String userAlias) {
+        userService.getProfile(userAlias, new GetUserObserver() );
     }
 
     public class GetUserObserver implements UserService.Observer{
