@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.util.FakeData;
 
 public abstract class BackgroundTask implements Runnable {
 
@@ -13,15 +14,13 @@ public abstract class BackgroundTask implements Runnable {
     public static final String EXCEPTION_KEY = "exception";
 
     /**
-     * Auth token for logged-in user.
-     * This user is the "follower" in the relationship.
-     */
-    protected AuthToken authToken;
-
-    /**
      * Message handler that will receive task results.
      */
     protected Handler messageHandler;
+
+    protected FakeData getFakeData() {
+        return FakeData.getInstance();
+    }
 
     protected void sendSuccessMessage() {
         Bundle msgBundle = new Bundle();

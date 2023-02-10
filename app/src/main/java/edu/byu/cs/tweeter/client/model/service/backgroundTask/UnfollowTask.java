@@ -11,7 +11,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Background task that removes a following relationship between two users.
  */
-public class UnfollowTask extends BackgroundTask {
+public class UnfollowTask extends AuthenticatedTask {
     private static final String LOG_TAG = "UnfollowTask";
 
     /**
@@ -22,7 +22,7 @@ public class UnfollowTask extends BackgroundTask {
     public UnfollowTask(AuthToken authToken, User followee, Handler messageHandler) {
         this.authToken = authToken;
         this.followee = followee;
-        super.messageHandler = messageHandler;
+        this.messageHandler = messageHandler;
     }
 
     @Override

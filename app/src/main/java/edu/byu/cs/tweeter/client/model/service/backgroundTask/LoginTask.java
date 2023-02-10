@@ -13,25 +13,14 @@ import edu.byu.cs.tweeter.util.Pair;
 /**
  * Background task that logs in a user (i.e., starts a session).
  */
-public class LoginTask extends BackgroundTask {
+public class LoginTask extends AuthenticateTask {
 
     private static final String LOG_TAG = "LoginTask";
-    public static final String USER_KEY = "user";
-    public static final String AUTH_TOKEN_KEY = "auth-token";
-
-    /**
-     * The user's username (or "alias" or "handle"). E.g., "@susan".
-     */
-    private String username;
-    /**
-     * The user's password.
-     */
-    private String password;
 
     public LoginTask(String username, String password, Handler messageHandler) {
         this.username = username;
         this.password = password;
-        super.messageHandler = messageHandler;
+        this.messageHandler = messageHandler;
     }
 
     @Override
@@ -48,10 +37,6 @@ public class LoginTask extends BackgroundTask {
             Log.e(LOG_TAG, ex.getMessage(), ex);
             sendExceptionMessage(ex);
         }
-    }
-
-    private FakeData getFakeData() {
-        return FakeData.getInstance();
     }
 
     private Pair<User, AuthToken> doLogin() {

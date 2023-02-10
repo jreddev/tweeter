@@ -16,31 +16,16 @@ import edu.byu.cs.tweeter.util.Pair;
 /**
  * Background task that retrieves a page of followers.
  */
-public class GetFollowersTask extends BackgroundTask {
+public class GetFollowersTask extends PagedTask<User> {
     private static final String LOG_TAG = "GetFollowersTask";
     public static final String FOLLOWERS_KEY = "followers";
-    public static final String MORE_PAGES_KEY = "more-pages";
-    /**
-     * The user whose followers are being retrieved.
-     * (This can be any user, not just the currently logged-in user.)
-     */
-    private User targetUser;
-    /**
-     * Maximum number of followers to return (i.e., page size).
-     */
-    private int limit;
-    /**
-     * The last follower returned in the previous page of results (can be null).
-     * This allows the new page to begin where the previous page ended.
-     */
-    private User lastFollower;
 
     public GetFollowersTask(AuthToken authToken, User targetUser, int limit, User lastFollower,
                             Handler messageHandler) {
         super.authToken = authToken;
         this.targetUser = targetUser;
         this.limit = limit;
-        this.lastFollower = lastFollower;
+        this.lastItem = lastFollower;
         super.messageHandler = messageHandler;
     }
 
@@ -60,12 +45,8 @@ public class GetFollowersTask extends BackgroundTask {
         }
     }
 
-    private FakeData getFakeData() {
-        return FakeData.getInstance();
-    }
-
     private Pair<List<User>, Boolean> getFollowers() {
-        Pair<List<User>, Boolean> pageOfUsers = getFakeData().getPageOfUsers(lastFollower, limit, targetUser);
+        Pair<List<User>, Boolean> pageOfUsers = getFakeData().getPageOfUsers(lastItem, limit, targetUser);
         return pageOfUsers;
     }
 

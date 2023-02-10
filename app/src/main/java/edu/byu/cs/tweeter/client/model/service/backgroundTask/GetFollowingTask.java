@@ -16,31 +16,17 @@ import edu.byu.cs.tweeter.util.Pair;
 /**
  * Background task that retrieves a page of other users being followed by a specified user.
  */
-public class GetFollowingTask extends BackgroundTask {
+public class GetFollowingTask extends PagedTask<User> {
     private static final String LOG_TAG = "GetFollowingTask";
     public static final String FOLLOWEES_KEY = "followees";
-    public static final String MORE_PAGES_KEY = "more-pages";
-    /**
-     * The user whose following is being retrieved.
-     * (This can be any user, not just the currently logged-in user.)
-     */
-    private User targetUser;
-    /**
-     * Maximum number of followed users to return (i.e., page size).
-     */
-    private int limit;
-    /**
-     * The last person being followed returned in the previous page of results (can be null).
-     * This allows the new page to begin where the previous page ended.
-     */
-    private User lastFollowee;
+
 
     public GetFollowingTask(AuthToken authToken, User targetUser, int limit, User lastFollowee,
                             Handler messageHandler) {
         super.authToken = authToken;
         this.targetUser = targetUser;
         this.limit = limit;
-        this.lastFollowee = lastFollowee;
+        this.lastItem = lastFollowee;
         super.messageHandler = messageHandler;
     }
 
@@ -60,12 +46,8 @@ public class GetFollowingTask extends BackgroundTask {
         }
     }
 
-    private FakeData getFakeData() {
-        return FakeData.getInstance();
-    }
-
     private Pair<List<User>, Boolean> getFollowees() {
-        return getFakeData().getPageOfUsers((User) lastFollowee, limit, targetUser);
+        return getFakeData().getPageOfUsers((User) lastItem, limit, targetUser);
     }
 
 

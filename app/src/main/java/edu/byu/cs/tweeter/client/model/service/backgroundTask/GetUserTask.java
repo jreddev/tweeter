@@ -12,7 +12,7 @@ import edu.byu.cs.tweeter.util.FakeData;
 /**
  * Background task that returns the profile for a specified user.
  */
-public class GetUserTask extends BackgroundTask {
+public class GetUserTask extends AuthenticatedTask {
     private static final String LOG_TAG = "GetUserTask";
     public static final String USER_KEY = "user";
 
@@ -22,9 +22,9 @@ public class GetUserTask extends BackgroundTask {
     private String alias;
 
     public GetUserTask(AuthToken authToken, String alias, Handler messageHandler) {
-        super.authToken = authToken;
+        this.authToken = authToken;
         this.alias = alias;
-        super.messageHandler = messageHandler;
+        this.messageHandler = messageHandler;
     }
 
     @Override
@@ -38,10 +38,6 @@ public class GetUserTask extends BackgroundTask {
             Log.e(LOG_TAG, ex.getMessage(), ex);
             sendExceptionMessage(ex);
         }
-    }
-
-    private FakeData getFakeData() {
-        return FakeData.getInstance();
     }
 
     private User getUser() {

@@ -11,15 +11,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Background task that queries how many followers a user has.
  */
-public class GetFollowersCountTask extends BackgroundTask {
+public class GetFollowersCountTask extends GetCountTask {
     private static final String LOG_TAG = "GetFollowersCountTask";
-    public static final String COUNT_KEY = "count";
-    /**
-     * The user whose follower count is being retrieved.
-     * (This can be any user, not just the currently logged-in user.)
-     */
-    private User targetUser;
-
     public GetFollowersCountTask(AuthToken authToken, User targetUser, Handler messageHandler) {
         super.authToken = authToken;
         this.targetUser = targetUser;
@@ -38,14 +31,5 @@ public class GetFollowersCountTask extends BackgroundTask {
         }
     }
 
-    private void sendSuccessMessage(int count) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, true);
-        msgBundle.putInt(COUNT_KEY, count);
 
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
-    }
 }
