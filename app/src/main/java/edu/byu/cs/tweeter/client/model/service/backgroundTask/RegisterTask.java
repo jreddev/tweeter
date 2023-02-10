@@ -13,14 +13,10 @@ import edu.byu.cs.tweeter.util.Pair;
 /**
  * Background task that creates a new user account and logs in the new user (i.e., starts a session).
  */
-public class RegisterTask implements Runnable {
+public class RegisterTask extends BackgroundTask {
     private static final String LOG_TAG = "RegisterTask";
-
-    public static final String SUCCESS_KEY = "success";
     public static final String USER_KEY = "user";
     public static final String AUTH_TOKEN_KEY = "auth-token";
-    public static final String MESSAGE_KEY = "message";
-    public static final String EXCEPTION_KEY = "exception";
 
     /**
      * The user's first name.
@@ -42,10 +38,6 @@ public class RegisterTask implements Runnable {
      * The base-64 encoded bytes of the user's profile image.
      */
     private String image;
-    /**
-     * Message handler that will receive task results.
-     */
-    private Handler messageHandler;
 
     public RegisterTask(String firstName, String lastName, String username, String password,
                         String image, Handler messageHandler) {
@@ -54,7 +46,7 @@ public class RegisterTask implements Runnable {
         this.username = username;
         this.password = password;
         this.image = image;
-        this.messageHandler = messageHandler;
+        super.messageHandler = messageHandler;
     }
 
     @Override
@@ -88,28 +80,6 @@ public class RegisterTask implements Runnable {
         msgBundle.putBoolean(SUCCESS_KEY, true);
         msgBundle.putSerializable(USER_KEY, registeredUser);
         msgBundle.putSerializable(AUTH_TOKEN_KEY, authToken);
-
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
-    }
-
-    private void sendFailedMessage(String message) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, false);
-        msgBundle.putString(MESSAGE_KEY, message);
-
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
-    }
-
-    private void sendExceptionMessage(Exception exception) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, false);
-        msgBundle.putSerializable(EXCEPTION_KEY, exception);
 
         Message msg = Message.obtain();
         msg.setData(msgBundle);
