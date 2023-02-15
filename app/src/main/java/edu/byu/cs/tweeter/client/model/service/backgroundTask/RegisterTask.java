@@ -2,12 +2,11 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
+
+import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
 /**
@@ -30,45 +29,16 @@ public class RegisterTask extends AuthenticateTask {
 
     public RegisterTask(String firstName, String lastName, String username, String password,
                         String image, Handler messageHandler) {
+        super(username,password,messageHandler);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
-        this.password = password;
         this.image = image;
-        this.messageHandler = messageHandler;
     }
 
     @Override
-    public void run() {
-        try {
-            Pair<User, AuthToken> registerResult = doRegister();
-
-            User registeredUser = registerResult.getFirst();
-            AuthToken authToken = registerResult.getSecond();
-
-            sendSuccessMessage(registeredUser, authToken);
-
-        } catch (Exception ex) {
-            Log.e(LOG_TAG, ex.getMessage(), ex);
-            sendExceptionMessage(ex);
-        }
-    }
-
-    private Pair<User, AuthToken> doRegister() {
+    protected Pair<User, AuthToken> runAuthenticationTask() {
         User registeredUser = getFakeData().getFirstUser();
         AuthToken authToken = getFakeData().getAuthToken();
         return new Pair<>(registeredUser, authToken);
-    }
-
-    private void sendSuccessMessage(User registeredUser, AuthToken authToken) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, true);
-        msgBundle.putSerializable(USER_KEY, registeredUser);
-        msgBundle.putSerializable(AUTH_TOKEN_KEY, authToken);
-
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
     }
 }

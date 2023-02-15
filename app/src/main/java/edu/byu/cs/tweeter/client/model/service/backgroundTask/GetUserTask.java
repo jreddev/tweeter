@@ -5,9 +5,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.FakeData;
 
 /**
  * Background task that returns the profile for a specified user.
@@ -20,39 +21,25 @@ public class GetUserTask extends AuthenticatedTask {
      * Alias (or handle) for user whose profile is being retrieved.
      */
     private String alias;
+    private User user;
 
     public GetUserTask(AuthToken authToken, String alias, Handler messageHandler) {
-        this.authToken = authToken;
+        super(authToken,messageHandler);
         this.alias = alias;
-        this.messageHandler = messageHandler;
     }
 
     @Override
-    public void run() {
-        try {
-            User user = getUser();
+    protected void runTask() throws IOException {
+        user = getUser();
+    }
 
-            sendSuccessMessage(user);
-
-        } catch (Exception ex) {
-            Log.e(LOG_TAG, ex.getMessage(), ex);
-            sendExceptionMessage(ex);
-        }
+    @Override
+    protected void loadSuccessBundle(Bundle msgBundle) {
+        msgBundle.putSerializable(USER_KEY, user);
     }
 
     private User getUser() {
         User user = getFakeData().findUserByAlias(alias);
         return user;
-    }
-
-    private void sendSuccessMessage(User user) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, true);
-        msgBundle.putSerializable(USER_KEY, user);
-
-        Message msg = Message.obtain();
-        msg.setData(msgBundle);
-
-        messageHandler.sendMessage(msg);
     }
 }
