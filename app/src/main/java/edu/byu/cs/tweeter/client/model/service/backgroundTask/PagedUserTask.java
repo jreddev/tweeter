@@ -6,7 +6,6 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.Pair;
 
 public abstract class PagedUserTask extends PagedTask<User> {
 

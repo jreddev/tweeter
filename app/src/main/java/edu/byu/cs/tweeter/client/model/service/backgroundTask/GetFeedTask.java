@@ -1,10 +1,7 @@
 package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
-import android.os.Bundle;
 import android.os.Handler;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -17,7 +14,6 @@ import edu.byu.cs.tweeter.util.Pair;
  */
 public class GetFeedTask extends PagedStatusTask {
     private static final String LOG_TAG = "GetFeedTask";
-    //public static final String STATUSES_KEY = "statuses";
 
     public GetFeedTask(AuthToken authToken, User targetUser, int limit, Status lastStatus,
                        Handler messageHandler) {
