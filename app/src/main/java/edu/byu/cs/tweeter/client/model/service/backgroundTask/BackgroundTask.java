@@ -18,6 +18,13 @@ public abstract class BackgroundTask implements Runnable {
     public static final String MESSAGE_KEY = "message";
     public static final String EXCEPTION_KEY = "exception";
 
+    public static final String USER_KEY = "user";
+    public static final String AUTH_TOKEN_KEY = "auth-token";
+    public static final String COUNT_KEY = "count";
+    public static final String IS_FOLLOWER_KEY = "is-follower";
+    public static final String MORE_PAGES_KEY = "more-pages";
+    public static final String ITEMS_KEY = "items";
+
     /**
      * Message handler that will receive task results.
      */

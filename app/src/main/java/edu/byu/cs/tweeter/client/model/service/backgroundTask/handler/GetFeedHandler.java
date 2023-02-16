@@ -30,10 +30,10 @@ public class GetFeedHandler extends Handler {
             observer.addItems(statuses, hasMorePages);
         } else if (msg.getData().containsKey(GetFeedTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFeedTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to get feed: " + message);
+            observer.handleFailure("Failed to get feed: " + message);
         } else if (msg.getData().containsKey(GetFeedTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFeedTask.EXCEPTION_KEY);
-            observer.displayException(ex, "Failed to get feed because of exception: ");
+            observer.handleException(ex, "Failed to get feed because of exception: ");
         }
     }
 }

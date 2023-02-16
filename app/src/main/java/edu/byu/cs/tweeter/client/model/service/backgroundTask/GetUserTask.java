@@ -13,7 +13,6 @@ import edu.byu.cs.tweeter.model.domain.User;
  */
 public class GetUserTask extends AuthenticatedTask {
     private static final String LOG_TAG = "GetUserTask";
-    public static final String USER_KEY = "user";
 
     /**
      * Alias (or handle) for user whose profile is being retrieved.

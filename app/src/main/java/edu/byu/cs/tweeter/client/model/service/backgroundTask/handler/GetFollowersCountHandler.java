@@ -25,10 +25,10 @@ public class GetFollowersCountHandler extends Handler {
             observer.updateFollowersCount(count);
         } else if (msg.getData().containsKey(GetFollowersCountTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to get followers count: " + message);
+            observer.handleFailure("Failed to get followers count: " + message);
         } else if (msg.getData().containsKey(GetFollowersCountTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFollowersCountTask.EXCEPTION_KEY);
-            observer.displayMessage("Failed to get followers count because of exception: " + ex.getMessage());
+            observer.handleFailure("Failed to get followers count because of exception: " + ex.getMessage());
         }
     }
 }

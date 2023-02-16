@@ -12,8 +12,6 @@ import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.Pair;
 
 public abstract class PagedTask <T> extends AuthenticatedTask {
-    public static final String MORE_PAGES_KEY = "more-pages";
-    public static final String ITEMS_KEY = "items";
     /**
      * The user whose feed is being retrieved.
      * (This can be any user, not just the currently logged-in user.)

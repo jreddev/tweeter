@@ -30,8 +30,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class FollowService {
 
     public interface Observer {
-        void displayMessage(String message);
-        void displayException(Exception ex, String message);
+        void handleFailure(String message);
+        void handleException(Exception ex, String message);
 
 
     }

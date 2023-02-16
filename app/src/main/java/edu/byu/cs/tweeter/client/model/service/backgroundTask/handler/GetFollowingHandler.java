@@ -31,10 +31,10 @@ public class GetFollowingHandler extends Handler {
 
         } else if (msg.getData().containsKey(GetFollowingTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFollowingTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to get following: " + message);
+            observer.handleFailure("Failed to get following: " + message);
         } else if (msg.getData().containsKey(GetFollowingTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFollowingTask.EXCEPTION_KEY);
-            observer.displayException(ex, "Failed to get following because of exception: ");
+            observer.handleException(ex, "Failed to get following because of exception: ");
         }
     }
 }

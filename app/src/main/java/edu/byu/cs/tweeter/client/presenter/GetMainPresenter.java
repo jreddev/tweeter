@@ -57,12 +57,12 @@ public class GetMainPresenter {
     public class GetUserObserver implements UserService.MainObserver {
 
         @Override
-        public void displayMessage(String message) {
+        public void handleFailure(String message) {
             view.displayMessage(message);
         }
 
         @Override
-        public void displayException(Exception ex, String message) {
+        public void handleException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
 
@@ -80,12 +80,12 @@ public class GetMainPresenter {
     public class GetFollowObserver implements FollowService.MainObserver {
 
         @Override
-        public void displayMessage(String message) {
+        public void handleFailure(String message) {
             view.displayMessage(message);
         }
 
         @Override
-        public void displayException(Exception ex, String message) {
+        public void handleException(Exception ex, String message) {
             view.displayMessage(message + ex.getMessage());
         }
         @Override
@@ -109,16 +109,22 @@ public class GetMainPresenter {
         }
     }
 
-    public class GetStatusObserver implements StatusService.Observer {
+    public class GetStatusObserver implements StatusService.StatusObserver {
 
         @Override
-        public void displayMessage(String message) {
+        public void handleSuccess() {
+            view.cancelPostingToast();
+            view.displayMessage("Successfully Posted!");
+        }
+
+        @Override
+        public void handleFailure(String message) {
             view.displayMessage(message);
         }
 
         @Override
-        public void cancelPostingToast() {
-            view.cancelPostingToast();
+        public void handleException(Exception e, String message) {
+            view.displayMessage(message + e.getMessage());
         }
     }
 }

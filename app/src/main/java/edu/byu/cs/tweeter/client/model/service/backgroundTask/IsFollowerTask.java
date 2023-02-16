@@ -14,7 +14,6 @@ import edu.byu.cs.tweeter.model.domain.User;
  */
 public class IsFollowerTask extends AuthenticatedTask {
     private static final String LOG_TAG = "IsFollowerTask";
-    public static final String IS_FOLLOWER_KEY = "is-follower";
     /**
      * The alleged follower.
      */

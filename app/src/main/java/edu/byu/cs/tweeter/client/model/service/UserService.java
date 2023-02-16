@@ -24,8 +24,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class UserService {
 
     public interface Observer {
-        void displayMessage(String message);
-        void displayException(Exception ex, String message);
+        void handleFailure(String message);
+        void handleException(Exception ex, String message);
         void startIntentActivity(User registeredUser, AuthToken authToken);
 
     }
@@ -61,7 +61,7 @@ public class UserService {
         try{
             validateRegistration(firstName, lastName, alias, password, image);
             observer.setErrorViewText(null);
-            observer.displayMessage("Registering...");
+            observer.handleFailure("Registering...");
 
             Bitmap image_map = ((BitmapDrawable) image).getBitmap();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

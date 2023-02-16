@@ -25,10 +25,10 @@ public class UnfollowHandler extends Handler {
             observer.updateFollowButton(updateFollow);
         } else if (msg.getData().containsKey(UnfollowTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(UnfollowTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to unfollow: " + message);
+            observer.handleFailure("Failed to unfollow: " + message);
         } else if (msg.getData().containsKey(UnfollowTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(UnfollowTask.EXCEPTION_KEY);
-            observer.displayMessage("Failed to unfollow because of exception: " + ex.getMessage());
+            observer.handleException(ex, "Failed to unfollow because of exception: ");
         }
         observer.updateFollow(success, updateFollow);
     }

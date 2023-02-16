@@ -27,10 +27,10 @@ public class GetUserHandler extends Handler {
             observer.startIntentActivity(user, null);
         } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to get user's profile: " + message);
+            observer.handleFailure("Failed to get user's profile: " + message);
         } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-            observer.displayException(ex, "Failed to get user's profile because of exception: ");
+            observer.handleException(ex, "Failed to get user's profile because of exception: ");
         }
     }
 }

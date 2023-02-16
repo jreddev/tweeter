@@ -25,10 +25,10 @@ public class IsFollowerHandler extends Handler {
             observer.updateFollowButton(!isFollower);
         } else if (msg.getData().containsKey(IsFollowerTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to determine following relationship: " + message);
+            observer.handleFailure("Failed to determine following relationship: " + message);
         } else if (msg.getData().containsKey(IsFollowerTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
-            observer.displayMessage("Failed to determine following relationship because of exception: " + ex.getMessage());
+            observer.handleFailure("Failed to determine following relationship because of exception: " + ex.getMessage());
         }
     }
 }

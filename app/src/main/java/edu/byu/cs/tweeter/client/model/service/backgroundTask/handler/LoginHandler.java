@@ -35,10 +35,10 @@ public class LoginHandler extends Handler {
 
         } else if (msg.getData().containsKey(LoginTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(LoginTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to login: " + message);
+            observer.handleFailure("Failed to login: " + message);
         } else if (msg.getData().containsKey(LoginTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(LoginTask.EXCEPTION_KEY);
-            observer.displayMessage("Failed to login because of exception: " + ex.getMessage());
+            observer.handleFailure("Failed to login because of exception: " + ex.getMessage());
         }
     }
 }

@@ -7,7 +7,6 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public abstract class GetCountTask extends AuthenticatedTask {
-    public static final String COUNT_KEY = "count";
     public static final int COUNT = 20;
     /**
      * The user whose following count is being retrieved.

@@ -29,10 +29,10 @@ public class GetStoryHandler extends Handler {
             observer.addItems(statuses, hasMorePages);
         } else if (msg.getData().containsKey(GetStoryTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetStoryTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to get story: " + message);
+            observer.handleFailure("Failed to get story: " + message);
         } else if (msg.getData().containsKey(GetStoryTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetStoryTask.EXCEPTION_KEY);
-            observer.displayException(ex, "Failed to get story because of exception: ");
+            observer.handleException(ex, "Failed to get story because of exception: ");
         }
     }
 }

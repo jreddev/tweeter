@@ -52,13 +52,13 @@ public class GetFeedPresenter {
     public class GetUserObserver implements UserService.Observer {
 
         @Override
-        public void displayMessage(String message) {
+        public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
         }
 
         @Override
-        public void displayException(Exception ex, String message) {
+        public void handleException(Exception ex, String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
         }
@@ -73,13 +73,13 @@ public class GetFeedPresenter {
 
     public class GetFeedObserver implements FollowService.FeedStoryObserver {
         @Override
-        public void displayMessage(String message) {
+        public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message);
         }
         @Override
-        public void displayException(Exception ex, String message) {
+        public void handleException(Exception ex, String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.displayMessage(message + ex.getMessage());

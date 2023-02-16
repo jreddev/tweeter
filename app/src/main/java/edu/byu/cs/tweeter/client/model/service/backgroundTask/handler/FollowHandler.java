@@ -25,10 +25,10 @@ public class FollowHandler extends Handler {
             observer.updateFollowButton(updateFollow);
         } else if (msg.getData().containsKey(FollowTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(FollowTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to follow: " + message);
+            observer.handleFailure("Failed to follow: " + message);
         } else if (msg.getData().containsKey(FollowTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(FollowTask.EXCEPTION_KEY);
-            observer.displayMessage("Failed to follow because of exception: " + ex.getMessage());
+            observer.handleException(ex, "Failed to follow because of exception: ");
         }
         observer.updateFollow(success, updateFollow);
     }

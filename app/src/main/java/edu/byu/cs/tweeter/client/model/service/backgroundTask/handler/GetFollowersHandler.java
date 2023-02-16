@@ -31,10 +31,10 @@ public class GetFollowersHandler extends Handler {
             observer.addFollowees(followers, hasMorePages);
         } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-            observer.displayMessage("Failed to get followers: " + message);
+            observer.handleFailure("Failed to get followers: " + message);
         } else if (msg.getData().containsKey(GetFollowersTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-            observer.displayException(ex, "Failed to get followers because of exception: ");
+            observer.handleException(ex, "Failed to get followers because of exception: ");
         }
     }
 }

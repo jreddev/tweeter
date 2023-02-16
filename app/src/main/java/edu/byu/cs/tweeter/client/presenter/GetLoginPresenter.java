@@ -28,11 +28,11 @@ public class GetLoginPresenter {
 
     public class GetLoginObserver implements UserService.AuthObserver {
         @Override
-        public void displayMessage(String message) {
+        public void handleFailure(String message) {
             view.displayMessage(message);
         }
         @Override
-        public void displayException(Exception ex, String message) {
+        public void handleException(Exception ex, String message) {
             //DOES NOTHING HERE
         }
         @Override
