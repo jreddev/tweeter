@@ -15,7 +15,6 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.FollowHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFeedHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowersCountHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowersHandler;
@@ -23,7 +22,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowi
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowingHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetStoryHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.IsFollowerHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UnfollowHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
+import edu.byu.cs.tweeter.client.presenter.GetMainPresenter;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -42,11 +43,18 @@ public class FollowService {
         void addItems(List<Status> statuses, boolean hasMorePages);
     }
     public interface MainObserver extends Observer{
-        void updateFollow(boolean success, boolean updateFollow);
         void updateFollowersCount(int count);
         void updateFolloweeCount(int count);
-        void updateFollowButton(boolean b);
+        void updateFollowButton();
     }
+
+    public interface IsFollowingObserver extends Observer {
+        void handleSuccess(boolean b);
+    }
+
+    public interface FollowObserver extends SimpleNotificationObserver {
+    }
+
     public void loadMoreItems(User user, int pageSize, User lastFollow, String type, FolloweeObserver observer) {
         if (Objects.equals(type, "following")){
             GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
@@ -90,19 +98,19 @@ public class FollowService {
                 selectedUser, new GetFollowingCountHandler(observer));
         executor.execute(followingCountTask);
     }
-    public void onClickUnfollow(User selectedUser, MainObserver observer) {
+    public void onClickUnfollow(User selectedUser, GetMainPresenter.FollowObserver observer) {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new UnfollowHandler(observer));
+                selectedUser, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(unfollowTask);
     }
-    public void onClickFollow(User selectedUser, MainObserver observer) {
+    public void onClickFollow(User selectedUser, FollowObserver observer) {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new FollowHandler(observer));
+                selectedUser, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(followTask);
     }
-    public void isFollower(User selectedUser, MainObserver observer) {
+    public void isFollower(User selectedUser, IsFollowingObserver observer) {
         IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();

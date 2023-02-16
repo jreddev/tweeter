@@ -1,8 +1,12 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import java.util.logging.FileHandler;
+
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -14,8 +18,8 @@ public class GetMainPresenter {
         void logout();
         void updateFollowersCount(int count);
         void updateFolloweeCount(int count);
-        void updateFollowButton(boolean b);
-        void updateFollow(boolean success, boolean updateFollow);
+        void updateFollowButton();
+        void updateFollowButton(boolean follow, boolean toast);
         void cancelPostingToast();
     }
 
@@ -36,18 +40,18 @@ public class GetMainPresenter {
     }
 
     public void updateFollowingAndFollowers(User selectedUser) {
-        followService.updateFollowingAndFollowers(selectedUser, new GetFollowObserver());
+        followService.updateFollowingAndFollowers(selectedUser, new GetFollowingObserver());
     }
 
     public void onClickUnfollow(User selectedUser) {
-        followService.onClickUnfollow(selectedUser, new GetFollowObserver());
+        followService.onClickUnfollow(selectedUser, new FollowObserver());
     }
 
     public void onClickFollow(User selectedUser) {
-        followService.onClickFollow(selectedUser, new GetFollowObserver());
+        followService.onClickFollow(selectedUser, new FollowObserver());
     }
     public void isFollower(User selectedUser) {
-        followService.isFollower(selectedUser, new GetFollowObserver());
+        followService.isFollower(selectedUser, new IsFollowingObserver());
     }
 
     public void postStatusTask(Status newStatus) {
@@ -77,7 +81,7 @@ public class GetMainPresenter {
         }
     }
 
-    public class GetFollowObserver implements FollowService.MainObserver {
+    public class GetFollowingObserver implements FollowService.MainObserver {
 
         @Override
         public void handleFailure(String message) {
@@ -99,13 +103,44 @@ public class GetMainPresenter {
         }
 
         @Override
-        public void updateFollowButton(boolean b) {
-            view.updateFollowButton(b);
+        public void updateFollowButton() {
+            view.updateFollowButton();
+        }
+
+    }
+
+    public class FollowObserver implements FollowService.FollowObserver {
+
+        @Override
+        public void handleFailure(String message) {
+            view.displayMessage(message);
         }
 
         @Override
-        public void updateFollow(boolean success, boolean updateFollow) {
-            view.updateFollow(success, updateFollow);
+        public void handleException(Exception ex) {
+            view.displayMessage(ex.getMessage());
+        }
+
+        @Override
+        public void handleSuccess() {
+            view.updateFollowButton();
+        }
+    }
+
+    public class IsFollowingObserver implements FollowService.IsFollowingObserver {
+
+        @Override
+        public void handleSuccess(boolean follow) {
+            view.updateFollowButton(follow, false);
+        }
+        @Override
+        public void handleFailure(String message) {
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception ex, String message) {
+            view.displayMessage(message + ex.getMessage());
         }
     }
 
@@ -123,8 +158,8 @@ public class GetMainPresenter {
         }
 
         @Override
-        public void handleException(Exception e, String message) {
-            view.displayMessage(message + e.getMessage());
+        public void handleException(Exception e) {
+            view.displayMessage(e.getMessage());
         }
     }
 }

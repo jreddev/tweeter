@@ -23,10 +23,10 @@ public abstract class BackgroundTaskHandler<T extends ServiceObserver> extends H
             handleSuccess(msg.getData(), observer);
         } else if (msg.getData().containsKey(BackgroundTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(BackgroundTask.MESSAGE_KEY);
-            observer.handleFailure("Failed to post status: " + message);
+            observer.handleFailure(message);
         } else if (msg.getData().containsKey(BackgroundTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(BackgroundTask.EXCEPTION_KEY);
-            observer.handleException(ex, "Failed to post status because of exception: ");
+            observer.handleException(ex);
         }
     }
 

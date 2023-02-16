@@ -10,9 +10,9 @@ import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 
 public class IsFollowerHandler extends Handler {
-    private FollowService.MainObserver observer;
+    private FollowService.IsFollowingObserver observer;
 
-    public IsFollowerHandler(FollowService.MainObserver observer) {
+    public IsFollowerHandler(FollowService.IsFollowingObserver observer) {
         super(Looper.getMainLooper());
         this.observer = observer;
     }
@@ -21,8 +21,7 @@ public class IsFollowerHandler extends Handler {
     public void handleMessage(@NonNull Message msg) {
         boolean success = msg.getData().getBoolean(IsFollowerTask.SUCCESS_KEY);
         if (success) {
-            boolean isFollower = msg.getData().getBoolean(IsFollowerTask.IS_FOLLOWER_KEY);
-            observer.updateFollowButton(!isFollower);
+            observer.handleSuccess(!msg.getData().getBoolean(IsFollowerTask.IS_FOLLOWER_KEY));
         } else if (msg.getData().containsKey(IsFollowerTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
             observer.handleFailure("Failed to determine following relationship: " + message);
