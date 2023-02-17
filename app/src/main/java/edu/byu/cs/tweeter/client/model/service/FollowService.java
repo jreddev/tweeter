@@ -28,28 +28,6 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowService {
 
-    public interface Observer {
-        void handleFailure(String message);
-        void handleException(Exception ex, String message);
-
-
-    }
-    public interface FolloweeObserver extends Observer {
-        void addFollowees(List<User> followees, boolean hasMorePages);
-    }
-    public interface FeedStoryObserver extends Observer{
-        void addItems(List<Status> statuses, boolean hasMorePages);
-    }
-    public interface MainObserver extends Observer{
-        void updateFollowersCount(int count);
-        void updateFolloweeCount(int count);
-        void updateFollowButton();
-    }
-
-    public interface IsFollowingObserver extends Observer {
-        void handleSuccess(boolean b);
-    }
-
     public void loadMoreItems(User user, int pageSize, User lastFollow, String type, SimpleListObserver<User> observer) {
         if (Objects.equals(type, "following")){
             GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),

@@ -18,25 +18,8 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.SimpleNoti
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UserAuthHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthObserver;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
 
 public class UserService {
-
-    public interface Observer {
-        void handleFailure(String message);
-        void handleException(Exception ex, String message);
-        void startIntentActivity(User registeredUser, AuthToken authToken);
-
-    }
-    public interface MainObserver extends Observer {
-        void logout();
-    }
-
-    public interface AuthObserver extends UserAuthObserver {
-        void setErrorViewText(Exception e);
-    }
-
     public void getProfile(String userAlias, UserAuthObserver observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                 userAlias, new UserAuthHandler(observer, "get_user"));

@@ -98,34 +98,6 @@ public class GetMainPresenter {
 
     }
 
-    public class GetFollowingObserver implements FollowService.MainObserver {
-
-        @Override
-        public void handleFailure(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void handleException(Exception ex, String message) {
-            view.displayMessage(message + ex.getMessage());
-        }
-        @Override
-        public void updateFollowersCount(int count) {
-            view.updateFollowersCount(count);
-        }
-
-        @Override
-        public void updateFolloweeCount(int count) {
-            view.updateFolloweeCount(count);
-        }
-
-        @Override
-        public void updateFollowButton() {
-            view.updateFollowButton();
-        }
-
-    }
-
     public class FollowObserver implements SimpleNotificationObserver {
 
         @Override
