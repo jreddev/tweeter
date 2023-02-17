@@ -4,8 +4,8 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.GetListObserver;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleListObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -59,7 +59,7 @@ public class GetStoryPresenter {
         userService.getProfile(userAlias, new GetUserObserver() );
     }
 
-    public class GetUserObserver implements UserObserver {
+    public class GetUserObserver implements UserAuthObserver {
         @Override
         public void handleFailure(String message) {
             view.displayMessage(message);
@@ -78,7 +78,7 @@ public class GetStoryPresenter {
         }
     }
 
-    public class GetStoryObserver implements GetListObserver<Status> {
+    public class GetStoryObserver implements SimpleListObserver<Status> {
         //TODO:: Observer specific messages and exceptions could be put here in all of the presensters.
         @Override
         public void handleFailure(String message) {

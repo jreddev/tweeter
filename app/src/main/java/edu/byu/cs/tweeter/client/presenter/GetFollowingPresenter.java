@@ -4,8 +4,8 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.GetListObserver;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleListObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -51,7 +51,7 @@ public class GetFollowingPresenter {
         userService.getProfile(userAlias, new GetUserObserver());
     }
 
-    public class GetFollowingObserver implements GetListObserver<User> {
+    public class GetFollowingObserver implements SimpleListObserver<User> {
         @Override
         public void handleFailure(String message) {
             isLoading = false;
@@ -75,7 +75,7 @@ public class GetFollowingPresenter {
         }
     }
 
-    public class GetUserObserver implements UserObserver
+    public class GetUserObserver implements UserAuthObserver
     {
         @Override
         public void handleFailure(String message) {

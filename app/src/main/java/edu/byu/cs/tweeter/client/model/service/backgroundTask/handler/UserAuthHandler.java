@@ -6,19 +6,19 @@ import java.util.Objects;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class UserHandler extends BackgroundTaskHandler<UserObserver> {
+public class UserAuthHandler extends BackgroundTaskHandler<UserAuthObserver> {
     private final String type;
-    public UserHandler(UserObserver observer, String type) {
+    public UserAuthHandler(UserAuthObserver observer, String type) {
         super(observer);
         this.type = type;
     }
 
     @Override
-    protected void handleSuccess(Bundle data, UserObserver observer) {
+    protected void handleSuccess(Bundle data, UserAuthObserver observer) {
         User user = (User) data.getSerializable(BackgroundTask.USER_KEY);
         AuthToken authToken = null;
         if (!Objects.equals(type, "get_user"))

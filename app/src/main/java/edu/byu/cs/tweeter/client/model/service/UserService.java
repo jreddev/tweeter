@@ -15,9 +15,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.SimpleNotificationHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UserHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UserAuthHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -33,23 +33,23 @@ public class UserService {
         void logout();
     }
 
-    public interface AuthObserver extends UserObserver{
+    public interface AuthObserver extends UserAuthObserver {
         void setErrorViewText(Exception e);
     }
 
-    public void getProfile(String userAlias, UserObserver observer) {
+    public void getProfile(String userAlias, UserAuthObserver observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                userAlias, new UserHandler(observer, "get_user"));
+                userAlias, new UserAuthHandler(observer, "get_user"));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getUserTask);
     }
 
-    public void login(String alias, String password, UserObserver observer) {
+    public void login(String alias, String password, UserAuthObserver observer) {
         try {
             validateLogin(alias, password);
             observer.setErrorViewText(null);
 
-            LoginTask loginTask = new LoginTask(alias, password, new UserHandler(observer, "login"));
+            LoginTask loginTask = new LoginTask(alias, password, new UserAuthHandler(observer, "login"));
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(loginTask);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class UserService {
         }
     }
 
-    public void Register(String firstName, String lastName, String alias, String password, Drawable image, UserObserver observer) {
+    public void Register(String firstName, String lastName, String alias, String password, Drawable image, UserAuthObserver observer) {
         try{
             validateRegistration(firstName, lastName, alias, password, image);
             observer.setErrorViewText(null);
@@ -70,7 +70,7 @@ public class UserService {
             String imageBytesBase64 = Base64.getEncoder().encodeToString(imageBytes);
 
             RegisterTask registerTask = new RegisterTask(firstName, lastName,
-                    alias, password, imageBytesBase64, new UserHandler(observer, "register"));
+                    alias, password, imageBytesBase64, new UserAuthHandler(observer, "register"));
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(registerTask);
         } catch (Exception e){

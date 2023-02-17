@@ -5,9 +5,9 @@ import java.util.Objects;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.IsFollowerObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleBoolObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleIntObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -76,7 +76,7 @@ public class GetMainPresenter {
         }
     }
 
-    public class CountObserver implements edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.CountObserver {
+    public class CountObserver implements SimpleIntObserver {
         @Override
         public void handleSuccess(int count, String followType){
             if (Objects.equals(followType, "followers")){
@@ -144,7 +144,7 @@ public class GetMainPresenter {
         }
     }
 
-    public class IsFollowingObserver implements IsFollowerObserver {
+    public class IsFollowingObserver implements SimpleBoolObserver {
 
         @Override
         public void handleSuccess(boolean isFollower) {
