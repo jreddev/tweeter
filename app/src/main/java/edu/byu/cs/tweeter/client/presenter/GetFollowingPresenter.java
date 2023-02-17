@@ -4,6 +4,8 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.GetListObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -49,22 +51,22 @@ public class GetFollowingPresenter {
         userService.getProfile(userAlias, new GetUserObserver());
     }
 
-    public class GetFollowingObserver implements FollowService.FolloweeObserver {
+    public class GetFollowingObserver implements GetListObserver<User> {
         @Override
         public void handleFailure(String message) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage(message);
+            view.displayMessage("Failed to get following: " + message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
+        public void handleException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage(message + ex.getMessage());
+            view.displayMessage("Failed to get following because of exception: " + ex.getMessage());
 
         }
         @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
+        public void handleSuccess(List<User> followees, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             lastFollowee = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
@@ -73,19 +75,23 @@ public class GetFollowingPresenter {
         }
     }
 
-    public class GetUserObserver implements UserService.Observer
+    public class GetUserObserver implements UserObserver
     {
         @Override
         public void handleFailure(String message) {
             view.displayMessage(message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
-            view.displayMessage(message + ex.getMessage());
+        public void handleException(Exception ex) {
+            view.displayMessage(ex.getMessage());
         }
         @Override
-        public void startIntentActivity(User user, AuthToken authToken) {
+        public void handleSuccess(User user, AuthToken authToken) {
             view.startIntentActivity(user);
+        }
+        @Override
+        public void setErrorViewText(Exception e) {
+            view.displayMessage(e.getMessage());
         }
     }
 }

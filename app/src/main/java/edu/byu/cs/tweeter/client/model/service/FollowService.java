@@ -15,16 +15,13 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFeedHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowersCountHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowersHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowingCountHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetFollowingHandler;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetStoryHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetListHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.IsFollowerHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.CountHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.GetListObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.IsFollowerObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
-import edu.byu.cs.tweeter.client.presenter.GetMainPresenter;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -52,19 +49,16 @@ public class FollowService {
         void handleSuccess(boolean b);
     }
 
-    public interface FollowObserver extends SimpleNotificationObserver {
-    }
-
-    public void loadMoreItems(User user, int pageSize, User lastFollow, String type, FolloweeObserver observer) {
+    public void loadMoreItems(User user, int pageSize, User lastFollow, String type, GetListObserver<User> observer) {
         if (Objects.equals(type, "following")){
             GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
-                    user, pageSize, lastFollow, new GetFollowingHandler(observer));
+                    user, pageSize, lastFollow, new GetListHandler<User>(observer, "following"));
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(getFollowingTask);
         }
         else if (Objects.equals(type, "followers")){
             GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
-                    user, pageSize, lastFollow, new GetFollowersHandler(observer));
+                    user, pageSize, lastFollow, new GetListHandler<User>(observer, "followers"));
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(getFollowersTask);
         }
@@ -72,16 +66,16 @@ public class FollowService {
             throw new RuntimeException("Wrong input: following or followers in FollowService");
         }
     }
-    public void loadMoreItems(User user, int pageSize, Status lastStatus, String type, FeedStoryObserver observer) {
+    public void loadMoreItems(User user, int pageSize, Status lastStatus, String type, GetListObserver<Status> observer) {
         if (Objects.equals(type, "story")){
             GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
-                    user, pageSize, lastStatus, new GetStoryHandler(observer));
+                    user, pageSize, lastStatus, new GetListHandler<Status>(observer, "story"));
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(getStoryTask);
         }
         else if (Objects.equals(type, "feed")){
             GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
-                    user, pageSize, lastStatus, new GetFeedHandler(observer));
+                    user, pageSize, lastStatus, new GetListHandler<Status>(observer, "feed"));
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(getFeedTask);
         }
@@ -89,28 +83,28 @@ public class FollowService {
             throw new RuntimeException("Wrong input: feed or story in FollowService");
         }
     }
-    public void updateFollowingAndFollowers(User selectedUser, MainObserver observer) {
+    public void updateFollowingAndFollowers(User selectedUser, edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.CountObserver observer) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new GetFollowersCountHandler(observer));
+                selectedUser, new CountHandler(observer, "followers"));
         executor.execute(followersCountTask);
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new GetFollowingCountHandler(observer));
+                selectedUser, new CountHandler(observer, "following"));
         executor.execute(followingCountTask);
     }
-    public void onClickUnfollow(User selectedUser, GetMainPresenter.FollowObserver observer) {
+    public void onClickUnfollow(User selectedUser, SimpleNotificationObserver observer) {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(unfollowTask);
     }
-    public void onClickFollow(User selectedUser, FollowObserver observer) {
+    public void onClickFollow(User selectedUser, SimpleNotificationObserver observer) {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(followTask);
     }
-    public void isFollower(User selectedUser, IsFollowingObserver observer) {
+    public void isFollower(User selectedUser, IsFollowerObserver observer) {
         IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();

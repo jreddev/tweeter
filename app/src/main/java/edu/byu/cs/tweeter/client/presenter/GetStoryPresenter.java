@@ -4,6 +4,8 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.GetListObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -57,22 +59,27 @@ public class GetStoryPresenter {
         userService.getProfile(userAlias, new GetUserObserver() );
     }
 
-    public class GetUserObserver implements UserService.Observer{
+    public class GetUserObserver implements UserObserver {
         @Override
         public void handleFailure(String message) {
             view.displayMessage(message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
-            view.displayMessage(message + ex.getMessage());
+        public void handleException(Exception ex) {
+            view.displayMessage(ex.getMessage());
         }
         @Override
-        public void startIntentActivity(User user, AuthToken authToken) {
+        public void handleSuccess(User user, AuthToken authToken) {
             view.startIntentActivity(user);
+        }
+        @Override
+        public void setErrorViewText(Exception e) {
+            view.displayMessage(e.getMessage());
         }
     }
 
-    public class GetStoryObserver implements FollowService.FeedStoryObserver {
+    public class GetStoryObserver implements GetListObserver<Status> {
+        //TODO:: Observer specific messages and exceptions could be put here in all of the presensters.
         @Override
         public void handleFailure(String message) {
             isLoading = false;
@@ -80,13 +87,13 @@ public class GetStoryPresenter {
             view.displayMessage(message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
+        public void handleException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage(message + ex.getMessage());
+            view.displayMessage(ex.getMessage());
         }
         @Override
-        public void addItems(List<Status> statuses, boolean hasMorePages) {
+        public void handleSuccess(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             setHasMorePages(hasMorePages);

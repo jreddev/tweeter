@@ -32,11 +32,11 @@ public class GetLoginPresenter {
             view.displayMessage(message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
+        public void handleException(Exception ex) {
             //DOES NOTHING HERE
         }
         @Override
-        public void startIntentActivity(User loggedInUser, AuthToken authToken) {
+        public void handleSuccess(User loggedInUser, AuthToken authToken) {
             view.startIntentActivity(loggedInUser,authToken);
         }
 

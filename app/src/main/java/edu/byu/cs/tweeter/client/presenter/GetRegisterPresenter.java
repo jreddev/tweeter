@@ -34,11 +34,11 @@ public class GetRegisterPresenter {
             view.displayMessage(message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
-            view.displayMessage(message + ex.getMessage());
+        public void handleException(Exception ex) {
+            view.displayMessage(ex.getMessage());
         }
         @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
+        public void handleSuccess(User registeredUser, AuthToken authToken) {
             view.startIntentActivity(registeredUser, authToken);
         }
 

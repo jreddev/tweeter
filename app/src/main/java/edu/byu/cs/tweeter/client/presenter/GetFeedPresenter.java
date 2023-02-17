@@ -4,6 +4,8 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.GetListObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -49,7 +51,7 @@ public class GetFeedPresenter {
         }
     }
 
-    public class GetUserObserver implements UserService.Observer {
+    public class GetUserObserver implements UserObserver {
 
         @Override
         public void handleFailure(String message) {
@@ -58,20 +60,25 @@ public class GetFeedPresenter {
         }
 
         @Override
-        public void handleException(Exception ex, String message) {
+        public void handleException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
         }
 
         @Override
-        public void startIntentActivity(User user, AuthToken authToken) {
+        public void handleSuccess(User user, AuthToken authToken) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.startIntentActivity(user);
         }
+
+        @Override
+        public void setErrorViewText(Exception e) {
+            view.displayMessage(e.getMessage());
+        }
     }
 
-    public class GetFeedObserver implements FollowService.FeedStoryObserver {
+    public class GetFeedObserver implements GetListObserver<Status> {
         @Override
         public void handleFailure(String message) {
             isLoading = false;
@@ -79,13 +86,13 @@ public class GetFeedPresenter {
             view.displayMessage(message);
         }
         @Override
-        public void handleException(Exception ex, String message) {
+        public void handleException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage(message + ex.getMessage());
+            view.displayMessage(ex.getMessage());
         }
         @Override
-        public void addItems(List<Status> statuses, boolean hasMorePages) {
+        public void handleSuccess(List<Status> statuses, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             lastStatus = (statuses.size() > 0) ? statuses.get(statuses.size() - 1) : null;

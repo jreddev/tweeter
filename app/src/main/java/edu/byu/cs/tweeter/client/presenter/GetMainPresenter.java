@@ -1,11 +1,11 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import java.util.logging.FileHandler;
+import java.util.Objects;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.IsFollowerObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -40,7 +40,7 @@ public class GetMainPresenter {
     }
 
     public void updateFollowingAndFollowers(User selectedUser) {
-        followService.updateFollowingAndFollowers(selectedUser, new GetFollowingObserver());
+        followService.updateFollowingAndFollowers(selectedUser, new CountObserver());
     }
 
     public void onClickUnfollow(User selectedUser) {
@@ -58,27 +58,44 @@ public class GetMainPresenter {
         statusService.postStatusTask(newStatus, new GetStatusObserver());
     }
 
-    public class GetUserObserver implements UserService.MainObserver {
+    public class GetUserObserver implements SimpleNotificationObserver {
 
+        @Override
+        public void handleFailure(String message) {
+            view.displayMessage("Failed to logout: " + message);
+        }
+
+        @Override
+        public void handleException(Exception ex) {
+            view.displayMessage("Failed to logout because of exception: " + ex.getMessage());
+        }
+
+        @Override
+        public void handleSuccess() {
+            view.logout();
+        }
+    }
+
+    public class CountObserver implements edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.CountObserver {
+        @Override
+        public void handleSuccess(int count, String followType){
+            if (Objects.equals(followType, "followers")){
+                view.updateFollowersCount(count);
+            }
+            else {
+                view.updateFolloweeCount(count);
+            }
+        }
         @Override
         public void handleFailure(String message) {
             view.displayMessage(message);
         }
 
         @Override
-        public void handleException(Exception ex, String message) {
-            view.displayMessage(message + ex.getMessage());
+        public void handleException(Exception ex) {
+            view.displayMessage(ex.getMessage());
         }
 
-        @Override
-        public void startIntentActivity(User registeredUser, AuthToken authToken) {
-
-        }
-
-        @Override
-        public void logout() {
-            view.logout();
-        }
     }
 
     public class GetFollowingObserver implements FollowService.MainObserver {
@@ -109,7 +126,7 @@ public class GetMainPresenter {
 
     }
 
-    public class FollowObserver implements FollowService.FollowObserver {
+    public class FollowObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleFailure(String message) {
@@ -127,20 +144,20 @@ public class GetMainPresenter {
         }
     }
 
-    public class IsFollowingObserver implements FollowService.IsFollowingObserver {
+    public class IsFollowingObserver implements IsFollowerObserver {
 
         @Override
-        public void handleSuccess(boolean follow) {
-            view.updateFollowButton(follow, false);
+        public void handleSuccess(boolean isFollower) {
+            view.updateFollowButton(isFollower, false);
         }
         @Override
         public void handleFailure(String message) {
-            view.displayMessage(message);
+            view.displayMessage("Failed to determine following relationship: " + message);
         }
 
         @Override
-        public void handleException(Exception ex, String message) {
-            view.displayMessage(message + ex.getMessage());
+        public void handleException(Exception ex) {
+            view.displayMessage("Failed to determine following relationship because of exception: " + ex.getMessage());
         }
     }
 
