@@ -22,11 +22,11 @@ public class GetRegisterPresenter extends Presenter {
     public class GetRegisterObserver implements UserAuthObserver {
         @Override
         public void handleFailure(String message) {
-            view.displayMessage(message);
+            view.displayMessage("Failed to register: " + message);
         }
         @Override
         public void handleException(Exception ex) {
-            view.displayMessage(ex.getMessage());
+            view.displayMessage("Failed to register due to exception: " + ex.getMessage());
         }
         @Override
         public void handleSuccess(User registeredUser, AuthToken authToken) {

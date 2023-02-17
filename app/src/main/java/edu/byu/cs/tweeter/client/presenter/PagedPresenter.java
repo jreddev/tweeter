@@ -9,7 +9,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthO
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public abstract class PagedPresenter<T> extends Presenter {
+public abstract class
+
+PagedPresenter<T> extends Presenter {
     protected static final int PAGE_SIZE = 10;
     protected T last;
     protected boolean hasMorePages;

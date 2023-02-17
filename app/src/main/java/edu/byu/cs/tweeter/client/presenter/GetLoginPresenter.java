@@ -20,11 +20,11 @@ public class GetLoginPresenter extends Presenter {
     public class GetLoginObserver implements UserAuthObserver {
         @Override
         public void handleFailure(String message) {
-            view.displayMessage(message);
+            view.displayMessage("Failed to login: " + message);
         }
         @Override
         public void handleException(Exception ex) {
-            //DOES NOTHING HERE
+            view.displayMessage("Failed to login due to exception: " + ex.getMessage());
         }
         @Override
         public void handleSuccess(User loggedInUser, AuthToken authToken) {

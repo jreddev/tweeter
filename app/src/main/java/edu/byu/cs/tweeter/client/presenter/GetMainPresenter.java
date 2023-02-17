@@ -87,12 +87,12 @@ public class GetMainPresenter extends Presenter {
         }
         @Override
         public void handleFailure(String message) {
-            view.displayMessage(message);
+            view.displayMessage("Failed to get count: " + message);
         }
 
         @Override
         public void handleException(Exception ex) {
-            view.displayMessage(ex.getMessage());
+            view.displayMessage("Failed to get count because of exception: " + ex.getMessage());
         }
 
     }
@@ -101,12 +101,12 @@ public class GetMainPresenter extends Presenter {
 
         @Override
         public void handleFailure(String message) {
-            view.displayMessage(message);
+            view.displayMessage("Failed to follow: " + message);
         }
 
         @Override
         public void handleException(Exception ex) {
-            view.displayMessage(ex.getMessage());
+            view.displayMessage("Failed to follow because of exception: " + ex.getMessage());
         }
 
         @Override
@@ -142,12 +142,12 @@ public class GetMainPresenter extends Presenter {
 
         @Override
         public void handleFailure(String message) {
-            view.displayMessage(message);
+            view.displayMessage("Failed to post status: " + message);
         }
 
         @Override
         public void handleException(Exception e) {
-            view.displayMessage(e.getMessage());
+            view.displayMessage("Failed to post status because of exception: " + e.getMessage());
         }
     }
 }
