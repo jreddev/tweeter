@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
@@ -19,12 +17,11 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UserAuthHa
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthObserver;
 
-public class UserService {
+public class UserService extends Service {
     public void getProfile(String userAlias, UserAuthObserver observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                 userAlias, new UserAuthHandler(observer, "get_user"));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getUserTask);
+        ExecuteTask(getUserTask);
     }
 
     public void login(String alias, String password, UserAuthObserver observer) {
@@ -33,8 +30,7 @@ public class UserService {
             observer.setErrorViewText(null);
 
             LoginTask loginTask = new LoginTask(alias, password, new UserAuthHandler(observer, "login"));
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(loginTask);
+            ExecuteTask(loginTask);
         } catch (Exception e) {
             observer.setErrorViewText(e);
         }
@@ -54,8 +50,7 @@ public class UserService {
 
             RegisterTask registerTask = new RegisterTask(firstName, lastName,
                     alias, password, imageBytesBase64, new UserAuthHandler(observer, "register"));
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(registerTask);
+            ExecuteTask(registerTask);
         } catch (Exception e){
             observer.setErrorViewText(e);
         }
@@ -101,7 +96,6 @@ public class UserService {
 
     public void onOptionsItemSelected(SimpleNotificationObserver observer) {
         LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new SimpleNotificationHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(logoutTask);
+        ExecuteTask(logoutTask);
     }
 }

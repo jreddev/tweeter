@@ -133,7 +133,7 @@ public class GetMainPresenter {
         }
     }
 
-    public class GetStatusObserver implements StatusService.StatusObserver {
+    public class GetStatusObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
