@@ -26,13 +26,15 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.GetFollowersPresenter;
+import edu.byu.cs.tweeter.client.presenter.Presenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the "Followers" tab.
  */
-public class FollowersFragment extends Fragment implements GetFollowersPresenter.View {
+public class FollowersFragment extends Fragment implements Presenter.ItemView<User> {
 
     private static final String LOG_TAG = "FollowersFragment";
     private static final String USER_KEY = "UserKey";
@@ -108,7 +110,7 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
     }
 
     @Override
-    public void addMoreItems(List<User> followers) {
+    public void addItems(List<User> followers) {
         followersRecyclerViewAdapter.addItems(followers);
     }
 

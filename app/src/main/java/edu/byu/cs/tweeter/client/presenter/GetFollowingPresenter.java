@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import android.content.ClipData;
+
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
@@ -9,7 +11,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthO
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetFollowingPresenter {
+public class GetFollowingPresenter extends Presenter{
     private static final int PAGE_SIZE = 10;
     private User lastFollowee;
     private boolean hasMorePages;
@@ -23,19 +25,11 @@ public class GetFollowingPresenter {
         return isLoading;
     }
     private boolean isLoading = false;
-
-    public interface View {
-        void setLoadingFooter(boolean value);
-        void displayMessage(String message);
-        void addMoreItems(List<User> followees);
-        void startIntentActivity(User user);
-    }
-
-    private View view;
+    private final ItemView<User> view;
     //REFACTORED FollowService & UserService Functions
-    private FollowService followService;
-    private UserService userService;
-    public GetFollowingPresenter(View view) {
+    private final FollowService followService;
+    private final UserService userService;
+    public GetFollowingPresenter(ItemView<User> view) {
         this.view = view;
         followService = new FollowService();
         userService = new UserService();
@@ -71,7 +65,7 @@ public class GetFollowingPresenter {
             view.setLoadingFooter(isLoading);
             lastFollowee = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
             setHasMorePages(hasMorePages);
-            view.addMoreItems(followees);
+            view.addItems(followees);
         }
     }
 

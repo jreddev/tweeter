@@ -11,10 +11,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNot
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetMainPresenter {
+public class GetMainPresenter extends Presenter {
 
-    public interface View {
-        void displayMessage(String message);
+    public interface View extends DefaultView {
         void logout();
         void updateFollowersCount(int count);
         void updateFolloweeCount(int count);
@@ -23,10 +22,10 @@ public class GetMainPresenter {
         void cancelPostingToast();
     }
 
-    private View view;
-    private UserService userService;
-    private FollowService followService;
-    private StatusService statusService;
+    private final View view;
+    private final UserService userService;
+    private final FollowService followService;
+    private final StatusService statusService;
 
     public GetMainPresenter(View view) {
         this.view = view;

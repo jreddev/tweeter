@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.presenter.GetRegisterPresenter;
+import edu.byu.cs.tweeter.client.presenter.Presenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -26,7 +27,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the register screen.
  */
-public class RegisterFragment extends Fragment implements GetRegisterPresenter.View {
+public class RegisterFragment extends Fragment implements Presenter.AuthView {
     private static final String LOG_TAG = "RegisterFragment";
     private static final int RESULT_IMAGE = 10;
 

@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import android.content.ClipData;
+
+import androidx.viewpager2.adapter.StatefulAdapter;
+
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
@@ -10,38 +14,27 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetStoryPresenter {
+public class GetStoryPresenter extends Presenter {
 
     private static final int PAGE_SIZE = 10;
     private Status lastStatus;
     private boolean hasMorePages;
     private boolean isLoading = false;
-
     public boolean isLoading() {
         return isLoading;
     }
-
     public boolean hasMorePages() {
         return hasMorePages;
     }
-
     public void setHasMorePages(boolean hasMorePages) {
         this.hasMorePages = hasMorePages;
     }
 
-    public interface View {
+    private final ItemView<Status> view;
+    private final UserService userService;
+    private final FollowService followService;
 
-        void setLoadingFooter(boolean isLoading);
-        void displayMessage(String message);
-        void addItems(List<Status> statuses);
-        void startIntentActivity(User user);
-    }
-
-    private View view;
-    private UserService userService;
-    private FollowService followService;
-
-    public GetStoryPresenter(View view) {
+    public GetStoryPresenter(ItemView<Status> view) {
         this.view = view;
         userService = new UserService();
         followService = new FollowService();

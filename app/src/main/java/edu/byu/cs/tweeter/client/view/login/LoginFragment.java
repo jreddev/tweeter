@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.presenter.GetLoginPresenter;
+import edu.byu.cs.tweeter.client.presenter.Presenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -22,7 +23,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the login screen.
  */
-public class LoginFragment extends Fragment implements GetLoginPresenter.View {
+public class LoginFragment extends Fragment implements Presenter.AuthView {
     private static final String LOG_TAG = "LoginFragment";
 
     private Toast loginToast;

@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import android.content.ClipData;
+
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
@@ -10,7 +12,7 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetFeedPresenter {
+public class GetFeedPresenter extends Presenter{
     private Status lastStatus;
     private static final int PAGE_SIZE = 10;
     private boolean hasMorePages;
@@ -24,16 +26,10 @@ public class GetFeedPresenter {
     public boolean hasMorePages() {
         return hasMorePages;
     }
-    public interface View {
-        void setLoadingFooter(boolean isLoading);
-        void displayMessage(String message);
-        void addItems(List<Status> statuses);
-        void startIntentActivity(User user);
-    }
-    private View view;
-    private UserService userService;
-    private FollowService followService;
-    public GetFeedPresenter(View view){
+    private final ItemView<Status> view;
+    private final UserService userService;
+    private final FollowService followService;
+    public GetFeedPresenter(ItemView<Status> view){
         this.view = view;
         userService = new UserService();
         followService = new FollowService();

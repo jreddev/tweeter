@@ -5,20 +5,10 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthO
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetLoginPresenter {
-
-    public interface View {
-
-        void displayMessage(String message);
-
-        void startIntentActivity(User loggedInUser, AuthToken authToken);
-
-        void setErrorViewText(Exception e);
-    }
-
-    private View view;
-    private UserService userService;
-    public GetLoginPresenter(View view) {
+public class GetLoginPresenter extends Presenter {
+    private final AuthView view;
+    private final UserService userService;
+    public GetLoginPresenter(AuthView view) {
         this.view = view;
         userService = new UserService();
     }

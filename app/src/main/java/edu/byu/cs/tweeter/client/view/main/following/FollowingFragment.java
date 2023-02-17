@@ -24,14 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.byu.cs.tweeter.R;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.AuthenticatedTask;
 import edu.byu.cs.tweeter.client.presenter.GetFollowingPresenter;
+import edu.byu.cs.tweeter.client.presenter.Presenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
  * Implements the "Following" tab.
  */
-public class FollowingFragment extends Fragment implements GetFollowingPresenter.View {
+public class FollowingFragment extends Fragment implements Presenter.ItemView<User> {
 
     private static final String LOG_TAG = "FollowingFragment";
     private static final String USER_KEY = "UserKey";
@@ -99,7 +102,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
     }
 
     @Override
-    public void addMoreItems(List<User> followees) {
+    public void addItems(List<User> followees) {
         followingRecyclerViewAdapter.addItems(followees);
     }
 
