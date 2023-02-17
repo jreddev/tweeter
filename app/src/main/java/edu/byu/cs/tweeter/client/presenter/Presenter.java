@@ -7,7 +7,7 @@ import java.util.List;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class Presenter {
+public abstract class Presenter {
     public interface DefaultView {
         void displayMessage(String message);
     }
