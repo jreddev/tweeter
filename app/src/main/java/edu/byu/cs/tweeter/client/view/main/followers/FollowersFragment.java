@@ -84,7 +84,7 @@ public class FollowersFragment extends Fragment implements Presenter.ItemView<Us
         followersRecyclerView.addOnScrollListener(new FollowRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new GetFollowersPresenter(this);
-        presenter.loadMoreFollowers(user);
+        presenter.loadMoreItems(user);
 
         return view;
     }
@@ -268,7 +268,7 @@ public class FollowersFragment extends Fragment implements Presenter.ItemView<Us
          * data.
          */
         void loadMoreItems() {
-            presenter.loadMoreFollowers(user);
+            presenter.loadMoreItems(user);
         }
 
         /**

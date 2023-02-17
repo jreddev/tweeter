@@ -89,7 +89,7 @@ public class StoryFragment extends Fragment implements Presenter.ItemView<Status
         storyRecyclerView.addOnScrollListener(new StoryRecyclerViewPaginationScrollListener(layoutManager));
 
         presenter = new GetStoryPresenter(this);
-        presenter.loadMoreStories(user);
+        presenter.loadMoreItems(user);
 
         return view;
     }
@@ -315,7 +315,7 @@ public class StoryFragment extends Fragment implements Presenter.ItemView<Status
          * data.
          */
         void loadMoreItems() {
-            presenter.loadMoreStories(user);
+            presenter.loadMoreItems(user);
         }
 
         /**

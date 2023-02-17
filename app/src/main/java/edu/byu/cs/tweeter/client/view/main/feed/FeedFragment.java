@@ -92,7 +92,7 @@ public class FeedFragment extends Fragment implements Presenter.ItemView<Status>
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
 
 
-        presenter.loadMoreFeeds(user);
+        presenter.loadMoreItems(user);
 
         return view;
     }
@@ -321,7 +321,7 @@ public class FeedFragment extends Fragment implements Presenter.ItemView<Status>
          * data.
          */
         void loadMoreItems() {
-            presenter.loadMoreFeeds(user);
+            presenter.loadMoreItems(user);
         }
 
         /**
