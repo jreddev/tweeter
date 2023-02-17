@@ -34,7 +34,6 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.GetFeedPresenter;
 import edu.byu.cs.tweeter.client.presenter.Presenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
-import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
