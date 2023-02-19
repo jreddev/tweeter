@@ -68,7 +68,7 @@ public class RegisterFragment extends Fragment implements Presenter.AuthView {
         registerButton = view.findViewById(R.id.registerButton);
         errorView = view.findViewById(R.id.registerError);
 
-        presenter = new GetRegisterPresenter(this);
+        presenter = new GetRegisterPresenter(this, "register");
 
         imageUploaderButton.setOnClickListener(new View.OnClickListener() {
             @Override

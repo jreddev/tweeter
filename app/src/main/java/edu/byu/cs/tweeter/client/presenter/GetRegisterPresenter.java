@@ -7,35 +7,12 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.UserAuthO
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetRegisterPresenter extends Presenter {
-    private final AuthView view;
-    private final UserService userService;
-    public GetRegisterPresenter(AuthView view){
-        this.view = view;
-        userService = new UserService();
+public class GetRegisterPresenter extends AuthPresenter {
+    public GetRegisterPresenter(AuthView view, String type){
+        super(view, type);
     }
 
     public void Register(String firstName, String lastName, String alias, String password, Drawable image) {
-        userService.Register(firstName, lastName, alias, password, image, new GetRegisterObserver());
-    }
-
-    public class GetRegisterObserver implements UserAuthObserver {
-        @Override
-        public void handleFailure(String message) {
-            view.displayMessage("Failed to register: " + message);
-        }
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to register due to exception: " + ex.getMessage());
-        }
-        @Override
-        public void handleSuccess(User registeredUser, AuthToken authToken) {
-            view.startIntentActivity(registeredUser, authToken);
-        }
-
-        @Override
-        public void setErrorViewText(Exception e) {
-            view.setErrorViewText(e);
-        }
+        userService.Register(firstName, lastName, alias, password, image, new GetAuthObserver());
     }
 }

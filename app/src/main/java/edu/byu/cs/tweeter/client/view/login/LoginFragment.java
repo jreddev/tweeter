@@ -49,7 +49,7 @@ public class LoginFragment extends Fragment implements Presenter.AuthView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        presenter = new GetLoginPresenter(this);
+        presenter = new GetLoginPresenter(this, "login");
 
         alias = view.findViewById(R.id.loginUsername);
         password = view.findViewById(R.id.loginPassword);
