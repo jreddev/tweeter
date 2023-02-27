@@ -60,8 +60,13 @@ public class GetMainPresenter extends Presenter {
     }
 
     public void postStatusTask(Status newStatus) {
+        view.displayMessage("Posting Status...");
         statusService = getStatusService();
-        statusService.postStatusTask(newStatus, new GetStatusObserver());
+        statusService.postStatusTask(newStatus, getStatusObserver());
+    }
+
+    protected GetStatusObserver getStatusObserver() {
+        return new GetStatusObserver();
     }
 
     public class GetUserObserver implements SimpleNotificationObserver {
@@ -140,7 +145,6 @@ public class GetMainPresenter extends Presenter {
     }
 
     public class GetStatusObserver implements SimpleNotificationObserver {
-
         @Override
         public void handleSuccess() {
             view.cancelPostingToast();
@@ -149,11 +153,13 @@ public class GetMainPresenter extends Presenter {
 
         @Override
         public void handleFailure(String message) {
+            view.cancelPostingToast();
             view.displayMessage("Failed to post status: " + message);
         }
 
         @Override
         public void handleException(Exception e) {
+            view.cancelPostingToast();
             view.displayMessage("Failed to post status because of exception: " + e.getMessage());
         }
     }
