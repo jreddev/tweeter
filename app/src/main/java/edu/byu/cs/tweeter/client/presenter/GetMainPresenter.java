@@ -25,15 +25,21 @@ public class GetMainPresenter extends Presenter {
     private final View view;
     private final UserService userService;
     private final FollowService followService;
-    private final StatusService statusService;
+    private StatusService statusService;
 
     public GetMainPresenter(View view) {
         this.view = view;
         userService = new UserService();
         followService = new FollowService();
-        statusService = new StatusService();
     }
 
+    protected StatusService getStatusService()
+    {
+        if (statusService == null)
+            return new StatusService();
+        else
+            return statusService;
+    }
     public void onOptionsItemSelected() {
         userService.onOptionsItemSelected(new GetUserObserver());
     }
@@ -54,6 +60,7 @@ public class GetMainPresenter extends Presenter {
     }
 
     public void postStatusTask(Status newStatus) {
+        statusService = getStatusService();
         statusService.postStatusTask(newStatus, new GetStatusObserver());
     }
 
